@@ -12,20 +12,20 @@
             box-sizing: border-box;
             font-family: 'Tahoma', 'Arial', sans-serif;
         }
-        
+
         body {
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
         }
-        
+
         .container {
             width: 90%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 15px;
         }
-        
+
         /* Header Styles */
         header {
             background: linear-gradient(135deg, #1e5799 0%, #207cca 51%, #2989d8 100%);
@@ -36,40 +36,40 @@
             top: 0;
             z-index: 1000;
         }
-        
+
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
             display: flex;
             align-items: center;
         }
-        
+
         .logo i {
             font-size: 2.2rem;
             margin-left: 10px;
             color: #a8e6cf;
         }
-        
+
         .logo h1 {
             font-size: 1.6rem;
             font-weight: 700;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
-        
+
         nav ul {
             display: flex;
             list-style: none;
         }
-        
+
         nav ul li {
             margin-right: 20px;
             position: relative;
         }
-        
+
         nav ul li a {
             color: white;
             text-decoration: none;
@@ -78,12 +78,12 @@
             border-radius: 4px;
             transition: all 0.3s ease;
         }
-        
+
         nav ul li a:hover {
             color: #a8e6cf;
             background-color: rgba(255,255,255,0.1);
         }
-        
+
         /* Hero Section */
         .hero {
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1584267385494-9fdd9a71ad75?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
@@ -94,26 +94,26 @@
             text-align: center;
             position: relative;
         }
-        
+
         .hero-content {
             position: relative;
             z-index: 1;
             width: 100%;
         }
-        
+
         .hero h2 {
             font-size: 2.5rem;
             margin-bottom: 15px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        
+
         .hero p {
             font-size: 1.2rem;
             max-width: 700px;
             margin: 0 auto 25px;
             line-height: 1.8;
         }
-        
+
         .btn {
             display: inline-block;
             background: linear-gradient(to right, #3498db, #2c3e50);
@@ -128,19 +128,19 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        
+
         .btn:hover {
             background: linear-gradient(to right, #2980b9, #1a2530);
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
-        
+
         /* Map Section */
         .map-section {
             padding: 50px 0;
             background: linear-gradient(to bottom, #f9f9f9, #e8f4f8);
         }
-        
+
         .section-title {
             text-align: center;
             margin-bottom: 35px;
@@ -149,7 +149,7 @@
             position: relative;
             padding-bottom: 15px;
         }
-        
+
         .section-title::after {
             content: '';
             position: absolute;
@@ -161,7 +161,7 @@
             background: linear-gradient(to right, #3498db, #2c3e50);
             border-radius: 3px;
         }
-        
+
         .map-container {
             height: 500px;
             background-color: #e0e0e0;
@@ -171,12 +171,12 @@
             margin-bottom: 25px;
             border: 1px solid #ddd;
         }
-        
+
         #iran-air-map {
             height: 100%;
             width: 100%;
         }
-        
+
         .map-controls {
             display: flex;
             justify-content: space-between;
@@ -189,7 +189,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        
+
         .map-controls button {
             background: linear-gradient(to right, #3498db, #2980b9);
             color: white;
@@ -201,13 +201,13 @@
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
+
         .map-controls button:hover {
             background: linear-gradient(to right, #2980b9, #1f618d);
             transform: translateY(-1px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
-        
+
         .city-selector {
             display: flex;
             justify-content: center;
@@ -215,7 +215,7 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        
+
         .city-btn {
             background: #ecf0f1;
             border: none;
@@ -226,19 +226,19 @@
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
+
         .city-btn.active {
             background: linear-gradient(to right, #3498db, #2c3e50);
             color: white;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        
+
         .city-btn:hover:not(.active) {
             background: #d5dbdb;
             transform: translateY(-1px);
         }
-        
+
         .map-legend {
             display: flex;
             justify-content: center;
@@ -250,13 +250,13 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        
+
         .legend-item {
             display: flex;
             align-items: center;
             margin: 0 5px;
         }
-        
+
         .legend-color {
             width: 22px;
             height: 22px;
@@ -264,19 +264,19 @@
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
-        
+
         /* District Data Section */
         .district-section {
             padding: 50px 0;
             background: linear-gradient(to bottom, #ffffff, #f5f9ff);
         }
-        
+
         .district-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
         }
-        
+
         .district-card {
             background: white;
             border-radius: 12px;
@@ -288,7 +288,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .district-card::before {
             content: '';
             position: absolute;
@@ -301,64 +301,64 @@
             transform-origin: left;
             transition: transform 0.3s ease;
         }
-        
+
         .district-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 12px 25px rgba(0,0,0,0.15);
         }
-        
+
         .district-card:hover::before {
             transform: scaleX(1);
         }
-        
+
         .district-name {
             font-size: 1.3rem;
             font-weight: bold;
             margin-bottom: 15px;
             color: #2c3e50;
         }
-        
+
         .district-aqi {
             font-size: 2.2rem;
             font-weight: bold;
             margin: 15px 0;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
-        
+
         .district-status {
             font-size: 1.1rem;
             margin-bottom: 15px;
             font-weight: bold;
         }
-        
+
         .district-recommendation {
             font-size: 0.95rem;
             color: #666;
             margin-top: 15px;
             line-height: 1.7;
         }
-        
+
         /* Footer */
         footer {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             padding: 40px 0 20px;
         }
-        
+
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 30px;
             margin-bottom: 25px;
         }
-        
+
         .footer-column h3 {
             margin-bottom: 20px;
             font-size: 1.2rem;
             position: relative;
             padding-bottom: 10px;
         }
-        
+
         .footer-column h3::after {
             content: '';
             position: absolute;
@@ -368,22 +368,22 @@
             height: 2px;
             background: #a8e6cf;
         }
-        
+
         .footer-column ul {
             list-style: none;
         }
-        
+
         .footer-column ul li {
             margin-bottom: 12px;
             display: flex;
             align-items: center;
         }
-        
+
         .footer-column ul li i {
             margin-left: 8px;
             color: #a8e6cf;
         }
-        
+
         .footer-column ul li a {
             color: #ddd;
             text-decoration: none;
@@ -391,11 +391,11 @@
             display: flex;
             align-items: center;
         }
-        
+
         .footer-column ul li a:hover {
             color: #a8e6cf;
         }
-        
+
         .developer-info {
             text-align: center;
             margin-bottom: 20px;
@@ -403,11 +403,11 @@
             background: rgba(255,255,255,0.1);
             border-radius: 8px;
         }
-        
+
         .developer-info p {
             margin-bottom: 8px;
         }
-        
+
         .telegram-link {
             display: inline-flex;
             align-items: center;
@@ -419,17 +419,17 @@
             transition: all 0.3s;
             font-weight: bold;
         }
-        
+
         .telegram-link:hover {
             background: #0077b5;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        
+
         .telegram-link i {
             margin-right: 8px;
         }
-        
+
         .copyright {
             text-align: center;
             padding-top: 20px;
@@ -437,58 +437,58 @@
             font-size: 0.9rem;
             color: #aaa;
         }
-        
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .logo {
                 margin-bottom: 15px;
             }
-            
+
             nav ul {
                 justify-content: center;
                 flex-wrap: wrap;
             }
-            
+
             nav ul li {
                 margin: 5px;
             }
-            
+
             .hero h2 {
                 font-size: 2rem;
             }
-            
+
             .hero p {
                 font-size: 1rem;
             }
-            
+
             .map-controls {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .section-title {
                 font-size: 1.7rem;
             }
         }
-        
+
         @media (max-width: 480px) {
             .hero {
                 height: 300px;
             }
-            
+
             .hero h2 {
                 font-size: 1.7rem;
             }
-            
+
             .map-container {
                 height: 400px;
             }
-            
+
             .district-container {
                 grid-template-columns: 1fr;
             }
@@ -531,7 +531,7 @@
     <section class="map-section" id="map">
         <div class="container">
             <h2 class="section-title">نقشه زنده آلودگی هوای ایران</h2>
-            
+
             <div class="city-selector">
                 <button class="city-btn active" data-city="tehran">تهران</button>
                 <button class="city-btn" data-city="mashhad">مشهد</button>
@@ -539,7 +539,7 @@
                 <button class="city-btn" data-city="shiraz">شیراز</button>
                 <button class="city-btn" data-city="tabriz">تبریز</button>
             </div>
-            
+
             <div class="map-controls">
                 <div>
                     <button id="refresh-data"><i class="fas fa-sync-alt"></i> بروزرسانی داده‌ها</button>
@@ -610,15 +610,6 @@
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3>لینک‌های مفید</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-leaf"></i> سازمان حفاظت محیط زیست</a></li>
-                        <li><a href="#"><i class="fas fa-heartbeat"></i> وزارت بهداشت</a></li>
-                        <li><a href="#"><i class="fas fa-city"></i> شهرداری تهران</a></li>
-                        <li><a href="#"><i class="fas fa-chart-line"></i> پایش آنلاین آلودگی هوا</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
                     <h3>راهنمای شاخص کیفیت هوا</h3>
                     <ul>
                         <li><i class="fas fa-circle" style="color: #2ecc71;"></i> پاک (0-50)</li>
@@ -638,12 +629,12 @@
     <script>
         // Initialize the map
         const map = L.map('iran-air-map').setView([35.6892, 51.3890], 10);
-        
+
         // Add tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-        
+
         // AQI color mapping
         const aqiColors = {
             good: '#2ecc71',
@@ -653,7 +644,7 @@
             veryUnhealthy: '#9b59b6',
             hazardous: '#7d3c98'
         };
-        
+
         // District data for different cities
         const cityDistricts = {
             tehran: [
@@ -733,25 +724,25 @@
                 { name: "منطقه ۱۰", lat: 38.1187, lng: 46.2273, aqi: 82, level: "moderate" }
             ]
         };
-        
+
         // Create markers for each district
         const markers = [];
         let currentCity = 'tehran';
-        
+
         function updateMapData() {
             // Clear existing markers
             markers.forEach(marker => map.removeLayer(marker));
             markers.length = 0;
-            
+
             // Get current city districts
             const districts = cityDistricts[currentCity];
-            
+
             // Add markers for each district with simulated real-time data
             districts.forEach(district => {
                 // Simulate slight changes in AQI for realism
                 const randomChange = Math.floor(Math.random() * 21) - 10; // -10 to +10
                 const newAqi = Math.max(0, Math.min(500, district.aqi + randomChange));
-                
+
                 // Determine AQI level based on value
                 let level, color;
                 if (newAqi <= 50) {
@@ -773,11 +764,11 @@
                     level = "hazardous";
                     color = aqiColors.hazardous;
                 }
-                
+
                 // Update district data
                 district.currentAqi = newAqi;
                 district.currentLevel = level;
-                
+
                 // Create custom icon based on AQI level
                 const iconHtml = `
                     <div style="
@@ -795,14 +786,14 @@
                         box-shadow: 0 2px 6px rgba(0,0,0,0.3);
                     ">${newAqi}</div>
                 `;
-                
+
                 const customIcon = L.divIcon({
                     html: iconHtml,
                     className: 'aqi-marker',
                     iconSize: [30, 30],
                     iconAnchor: [15, 15]
                 });
-                
+
                 // Create marker with popup
                 const marker = L.marker([district.lat, district.lng], { icon: customIcon })
                     .addTo(map)
@@ -815,19 +806,19 @@
                             <p style="font-size: 0.9em; color: #666;">${getRecommendation(level)}</p>
                         </div>
                     `);
-                
+
                 markers.push(marker);
             });
-            
+
             // Update last update time
             const now = new Date();
             document.getElementById('last-update').textContent = 
                 `آخرین بروزرسانی: ${now.toLocaleTimeString('fa-IR')}`;
-            
+
             // Update district cards
             updateDistrictCards();
         }
-        
+
         // Helper function to get Persian text for AQI level
         function getLevelText(level) {
             switch(level) {
@@ -840,7 +831,7 @@
                 default: return "نامشخص";
             }
         }
-        
+
         // Helper function to get recommendations based on AQI level
         function getRecommendation(level) {
             switch(level) {
@@ -853,43 +844,43 @@
                 default: return "اطلاعات کافی در دسترس نیست.";
             }
         }
-        
+
         // Update district cards
         function updateDistrictCards() {
             const districtContainer = document.getElementById('district-container');
             districtContainer.innerHTML = '';
-            
+
             const districts = cityDistricts[currentCity];
-            
+
             districts.forEach(district => {
                 const card = document.createElement('div');
                 card.className = 'district-card';
-                
+
                 const aqi = district.currentAqi || district.aqi;
                 const level = district.currentLevel || district.level;
                 const color = aqiColors[level];
-                
+
                 card.innerHTML = `
                     <div class="district-name">${district.name}</div>
                     <div class="district-aqi" style="color: ${color}">${aqi}</div>
                     <div class="district-status">${getLevelText(level)}</div>
                     <div class="district-recommendation">${getRecommendation(level)}</div>
                 `;
-                
+
                 districtContainer.appendChild(card);
             });
         }
-        
+
         // Change city function
         function changeCity(city) {
             currentCity = city;
-            
+
             // Update active button
             document.querySelectorAll('.city-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.querySelector(`.city-btn[data-city="${city}"]`).classList.add('active');
-            
+
             // Update city name in section title
             const cityNames = {
                 tehran: 'تهران',
@@ -899,7 +890,7 @@
                 tabriz: 'تبریز'
             };
             document.getElementById('current-city-name').textContent = cityNames[city];
-            
+
             // Change map view based on city
             const cityCenters = {
                 tehran: [35.6892, 51.3890],
@@ -908,19 +899,19 @@
                 shiraz: [29.5926, 52.5836],
                 tabriz: [38.0962, 46.2738]
             };
-            
+
             map.setView(cityCenters[city], 11);
-            
+
             // Update map data and district cards
             updateMapData();
         }
-        
+
         // Auto-refresh functionality
         let autoRefreshInterval;
-        
+
         function toggleAutoRefresh() {
             const button = document.getElementById('auto-refresh');
-            
+
             if (autoRefreshInterval) {
                 clearInterval(autoRefreshInterval);
                 autoRefreshInterval = null;
@@ -932,11 +923,11 @@
                 button.innerHTML = '<i class="fas fa-stop"></i> توقف بروزرسانی خودکار';
             }
         }
-        
+
         // Event listeners
         document.getElementById('refresh-data').addEventListener('click', updateMapData);
         document.getElementById('auto-refresh').addEventListener('click', toggleAutoRefresh);
-        
+
         // City selector event listeners
         document.querySelectorAll('.city-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -944,18 +935,18 @@
                 changeCity(city);
             });
         });
-        
+
         // Initialize the map with data
         updateMapData();
-        
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('nav a').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                
+
                 const targetId = this.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
-                
+
                 window.scrollTo({
                     top: targetElement.offsetTop - 80,
                     behavior: 'smooth'
