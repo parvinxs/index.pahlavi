@@ -1,35 +1,40 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سامانه پایش هوشمند آلودگی هوا | ۲۰۲۵</title>
-    
-    <!-- Google Fonts: Vazirmatn -->
+
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
-
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Libraries -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        :root {
+         :root {
+            /* Light Theme Variables */
             --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --background: #f8fafc;
-            --surface: rgba(255, 255, 255, 0.85);
+            --bg-body: #f8fafc;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-hover: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --map-overlay: contrast(1.1);
+            /* Dynamic Background Colors */
+            --bg-grad-1: rgba(37, 99, 235, 0.1);
+            --bg-grad-2: rgba(16, 185, 129, 0.1);
             --radius-lg: 24px;
-            --radius-md: 16px;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
-            
-            /* AQI Colors */
             --aqi-good: #10b981;
             --aqi-moderate: #f59e0b;
             --aqi-sensitive: #f97316;
@@ -37,32 +42,48 @@
             --aqi-very-unhealthy: #a855f7;
             --aqi-hazardous: #7e22ce;
         }
-
+        
+        [data-theme="dark"] {
+            --primary: #60a5fa;
+            --bg-body: #0f172a;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --card-hover: #1e293b;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --map-overlay: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+            --bg-grad-1: rgba(37, 99, 235, 0.15);
+            --bg-grad-2: rgba(16, 185, 129, 0.05);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Vazirmatn', sans-serif;
             scroll-behavior: smooth;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
-
+        
         body {
-            background-color: var(--background);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+            background-color: var(--bg-body);
+            background-image: radial-gradient(at 0% 0%, var(--bg-grad-1) 0px, transparent 50%), radial-gradient(at 100% 100%, var(--bg-grad-2) 0px, transparent 50%);
+            background-size: 100% 100%;
+            background-attachment: fixed;
             color: var(--text-main);
             line-height: 1.7;
             min-height: 100vh;
         }
-
+        
         .container {
             width: 92%;
             max-width: 1400px;
             margin: 0 auto;
         }
-
         /* Header */
+        
         header {
             position: fixed;
             top: 20px;
@@ -70,19 +91,18 @@
             transform: translateX(-50%);
             width: 90%;
             max-width: 1200px;
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--glass-bg);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: var(--glass-border);
+            border: 1px solid var(--glass-border);
             border-radius: 100px;
             padding: 12px 30px;
             z-index: 1000;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 25px -5px var(--shadow-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .logo {
             display: flex;
             align-items: center;
@@ -91,705 +111,1619 @@
             font-size: 1.3rem;
             color: var(--text-main);
         }
-
-        .logo i { color: var(--primary); font-size: 1.5rem; }
-
-        nav ul { display: flex; list-style: none; gap: 8px; }
-        nav ul li a {
-            text-decoration: none; color: var(--text-muted); font-weight: 500;
-            padding: 8px 16px; border-radius: 20px; transition: all 0.3s;
+        
+        .logo i {
+            color: var(--primary);
         }
-        nav ul li a:hover, nav ul li a.active { color: var(--primary); background: rgba(37, 99, 235, 0.1); }
-
+        
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            transition: 0.3s;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .theme-toggle:hover {
+            color: var(--primary);
+            transform: rotate(15deg);
+        }
         /* Hero */
-        .hero { padding-top: 160px; padding-bottom: 60px; text-align: center; }
+        
+        .hero {
+            padding-top: 160px;
+            padding-bottom: 40px;
+            text-align: center;
+        }
+        
         .hero h1 {
-            font-size: 3.5rem; font-weight: 900; margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--text-main) 0%, var(--primary) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
             letter-spacing: -1px;
         }
-        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; font-weight: 300; }
-        .status-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(16, 185, 129, 0.1); color: #059669;
-            padding: 6px 16px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; margin-bottom: 20px;
+        /* Dropdown */
+        
+        .city-selector-wrapper {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
         }
-
+        
+        .glass-select-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .glass-select {
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px 50px 16px 50px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .glass-select:hover,
+        .glass-select:focus {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .glass-select optgroup,
+        .glass-select option {
+            background: var(--bg-body);
+            color: var(--text-main);
+        }
+        
+        .select-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+        
+        .arrow-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            pointer-events: none;
+            transition: transform 0.3s;
+        }
         /* Map */
+        
         .map-wrapper {
-            position: relative; border-radius: var(--radius-lg); overflow: hidden;
-            box-shadow: var(--shadow-lg); height: 600px; border: 4px solid white; margin-bottom: 40px;
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px var(--shadow-color);
+            height: 500px;
+            border: 4px solid var(--card-hover);
+            margin-bottom: 40px;
         }
-        #iran-air-map { height: 100%; width: 100%; z-index: 1; }
-        .leaflet-tile { filter: saturate(0.8) contrast(1.1); }
+        
+        #iran-air-map {
+            height: 100%;
+            width: 100%;
+            cursor: crosshair;
+        }
+        
+        .leaflet-tile {
+            filter: var(--map-overlay);
+            transition: filter 0.5s ease;
+        }
         
         .floating-controls {
-            position: absolute; top: 20px; right: 20px; z-index: 500;
-            display: flex; flex-direction: column; gap: 10px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        .map-btn {
-            background: white; border: none; width: 45px; height: 45px;
-            border-radius: 12px; box-shadow: var(--shadow-sm); cursor: pointer;
-            color: var(--text-main); transition: all 0.2s; display: flex;
-            align-items: center; justify-content: center; font-size: 1.1rem;
-        }
-        .map-btn:hover { background: var(--primary); color: white; transform: translateY(-2px); }
-
-        .floating-legend {
-            position: absolute; bottom: 20px; left: 20px;
-            background: rgba(255, 255, 255, 0.95); padding: 15px;
-            border-radius: var(--radius-md); box-shadow: var(--shadow-sm); z-index: 500;
-            font-size: 0.85rem; backdrop-filter: blur(4px); display: flex; gap: 15px; flex-wrap: wrap; font-weight: 500;
-        }
-        .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 6px; }
-
-        /* City Selector */
-        .city-selector-wrapper { margin-bottom: 30px; position: relative; }
-        .city-scroll {
-            display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px;
-            scrollbar-width: none; -ms-overflow-style: none;
-            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-        }
-        .city-scroll::-webkit-scrollbar { display: none; }
-        .city-pill {
-            flex: 0 0 auto; background: white; border: 1px solid #e2e8f0;
-            padding: 10px 24px; border-radius: 100px; cursor: pointer; font-weight: 600;
-            color: var(--text-muted); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-size: 0.95rem;
-        }
-        .city-pill:hover { transform: translateY(-2px); border-color: var(--primary); color: var(--primary); }
-        .city-pill.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-
-        /* Stats Grid */
-        .stats-section { padding: 60px 0; }
-        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
-        .section-title h2 { font-size: 2rem; font-weight: 800; color: var(--text-main); }
-        .last-update-text {
-            font-size: 0.85rem; color: var(--text-muted); background: white;
-            padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; font-weight: 500;
-        }
-
-        .bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-        .bento-card {
-            background: white; border-radius: var(--radius-lg); padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid transparent; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: space-between; min-height: 180px;
-        }
-        .bento-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .district-title { font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
-        .aqi-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 8px; font-weight: 700; background: #f1f5f9; }
-        .aqi-number { font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 15px 0; letter-spacing: -2px; }
-        .aqi-status { font-weight: 700; font-size: 1rem; margin-bottom: 5px; }
-        .aqi-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
-
-        /* Footer */
-        footer { margin-top: 80px; background: white; border-top: 1px solid #e2e8f0; padding: 60px 0 30px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
-        .copyright { text-align: center; color: var(--text-muted); font-size: 0.9rem; padding-top: 30px; border-top: 1px solid #f1f5f9; }
         
-        /* Marker */
-        .custom-aqi-marker:hover { transform: scale(1.2); z-index: 999 !important; }
-        .marker-pin {
-            width: 40px; height: 40px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; color: white;
-            font-weight: 800; font-size: 14px; border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        .map-btn {
+            background: var(--card-hover);
+            border: 1px solid var(--glass-border);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            cursor: pointer;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: 0.2s;
         }
-
+        
+        .map-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .map-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        /* Weather Strip */
+        
+        .weather-strip {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .weather-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+        
+        .weather-item i {
+            color: var(--primary);
+        }
+        /* Smart Insight Card */
+        
+        .smart-insight-card {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        }
+        
+        .insight-text h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .insight-text p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .insight-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+        /* Health Widget */
+        
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .activity-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            border-radius: 18px;
+            text-align: center;
+            transition: transform 0.2s;
+            backdrop-filter: blur(8px);
+        }
+        
+        .activity-card:hover {
+            transform: translateY(-3px);
+            background: var(--card-hover);
+        }
+        
+        .activity-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .activity-status {
+            font-size: 0.9rem;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+        
+        .activity-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .status-yes {
+            color: var(--aqi-good);
+        }
+        
+        .status-caution {
+            color: var(--aqi-sensitive);
+        }
+        
+        .status-no {
+            color: var(--aqi-unhealthy);
+        }
+        /* Chart & Stats */
+        
+        .stats-section {
+            padding: 40px 0;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .big-share-btn {
+            background: linear-gradient(to right, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .big-share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .chart-container-wrapper {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px var(--shadow-color);
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .bento-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 6px -1px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 160px;
+            transition: transform 0.2s;
+        }
+        
+        .bento-card:hover {
+            transform: translateY(-5px);
+            background: var(--card-hover);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .district-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+        
+        .aqi-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 15px 0;
+            letter-spacing: -2px;
+            color: var(--text-main);
+        }
+        
+        .unit-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+        /* Loading Overlay */
+        
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-body);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: bold;
+            flex-direction: column;
+            gap: 15px;
+        }
+        /* Marker */
+        
+        .marker-pin {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            font-size: 1rem;
+        }
+        
+        .marker-pin.pulse {
+            animation: pulse-animation 2s infinite;
+        }
+        
+        @keyframes pulse-animation {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(37, 99, 235, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+        
         @media (max-width: 768px) {
-            header { width: 95%; padding: 10px 20px; top: 10px; }
-            nav ul { display: none; }
-            .hero h1 { font-size: 2.2rem; }
-            .map-wrapper { height: 450px; }
-            .floating-legend { display: none; }
-            .section-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            header {
+                width: 95%;
+                padding: 10px 20px;
+                top: 10px;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .map-wrapper {
+                height: 450px;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .big-share-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
+
 <body>
 
+    <div id="loading-overlay">
+        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+        <span>در حال دریافت اطلاعات آنلاین...</span>
+    </div>
+
     <header>
-        <div class="logo">
-            <i class="fa-solid fa-wind"></i>
-            <span>هوای‌ما</span>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#home" class="active">خانه</a></li>
-                <li><a href="#map">نقشه</a></li>
-                <li><a href="#stats">آمار مناطق</a></li>
-            </ul>
-        </nav>
-        <div style="font-size: 1.2rem; color: var(--text-main); cursor: pointer;" onclick="document.getElementById('refresh-data').click()">
-            <i class="fa-solid fa-rotate"></i>
+        <div class="logo"><i class="fa-solid fa-wind"></i><span>هوای‌ما</span></div>
+        <div style="display: flex; align-items: center;">
+            <div class="theme-toggle" id="theme-btn" title="تغییر تم">
+                <i class="fa-solid fa-moon"></i>
+            </div>
+            <div style="font-size: 1.2rem; cursor: pointer; color: var(--text-main);" onclick="document.getElementById('refresh-data').click()">
+                <i class="fa-solid fa-rotate"></i>
+            </div>
         </div>
     </header>
 
     <main>
-        <section class="hero" id="home">
+        <section class="hero">
             <div class="container">
-                <div class="status-badge">
-                    <i class="fa-solid fa-circle-check"></i> سامانه آنلاین ۲۰۲۵
-                </div>
                 <h1>پایش هوشمند کیفیت هوا</h1>
-                <p>دسترسی لحظه‌ای به شاخص آلودگی هوا در شهرهای ایران با رابط کاربری مدرن و داده‌های دقیق منطقه‌ای.</p>
             </div>
         </section>
 
         <section class="container" id="map">
             <div class="city-selector-wrapper">
-                <div class="city-scroll" id="city-selector"></div>
+                <div class="glass-select-container">
+                    <i class="fa-solid fa-location-dot select-icon"></i>
+                    <select id="city-dropdown" class="glass-select">
+                        <!-- Filled by JS -->
+                    </select>
+                    <i class="fa-solid fa-chevron-down arrow-icon"></i>
+                </div>
+            </div>
+
+            <div class="weather-strip" id="weather-container" style="display:none">
+                <div class="weather-item"><i class="fa-solid fa-temperature-half"></i> <span id="temp-val">--</span>°C</div>
+                <div class="weather-item"><i class="fa-solid fa-wind"></i> <span id="wind-val">--</span> km/h</div>
+                <div class="weather-item"><i class="fa-solid fa-droplet"></i> <span id="humid-val">--</span>%</div>
             </div>
 
             <div class="map-wrapper">
                 <div class="floating-controls">
-                    <button class="map-btn" id="refresh-data" title="بروزرسانی"><i class="fa-solid fa-rotate-right"></i></button>
-                    <button class="map-btn" id="auto-refresh" title="بروزرسانی خودکار"><i class="fa-solid fa-play"></i></button>
-                    <button class="map-btn" title="موقعیت من"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    <button class="map-btn" id="refresh-data" title="بروزرسانی داده‌ها"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button class="map-btn" id="locate-me" title="موقعیت دقیق من"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    <button class="map-btn" id="bookmark-btn" title="ذخیره مکان"><i class="fa-regular fa-bookmark"></i></button>
+                    <button class="map-btn" id="heatmap-toggle" title="نقشه حرارتی"><i class="fa-solid fa-fire"></i></button>
                 </div>
-                
-                <div class="floating-legend">
-                    <div><span class="legend-dot" style="background: var(--aqi-good)"></span> پاک</div>
-                    <div><span class="legend-dot" style="background: var(--aqi-moderate)"></span> سالم</div>
-                    <div><span class="legend-dot" style="background: var(--aqi-sensitive)"></span> حساس</div>
-                    <div><span class="legend-dot" style="background: var(--aqi-unhealthy)"></span> ناسالم</div>
-                    <div><span class="legend-dot" style="background: var(--aqi-very-unhealthy)"></span> بسیار ناسالم</div>
-                    <div><span class="legend-dot" style="background: var(--aqi-hazardous)"></span> خطرناک</div>
-                </div>
-
                 <div id="iran-air-map"></div>
             </div>
         </section>
 
+        <!-- Smart Insight -->
+        <section class="container" id="smart-insight-section" style="display:none">
+            <div class="smart-insight-card">
+                <div class="insight-text">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> پیش‌بینی هوشمند</h3>
+                    <p id="insight-message">در حال تحلیل...</p>
+                </div>
+                <div class="insight-icon">
+                    <i class="fa-solid fa-person-running"></i>
+                </div>
+            </div>
+        </section>
+
+        <section class="container" style="margin-top: 20px;">
+            <div class="section-title" style="margin-bottom: 20px;">
+                <h2 style="font-weight: 800;">راهنمای سلامت <span id="health-city-name">تهران</span></h2>
+            </div>
+            <div class="activity-grid" id="activity-container"></div>
+        </section>
+
         <section class="stats-section container" id="stats">
             <div class="section-header">
-                <div class="section-title">
-                    <h2>وضعیت هوای <span id="current-city-name">تهران</span></h2>
-                    <p style="color: var(--text-muted); margin-top: 5px;">گزارش تفکیکی ایستگاه‌های پایش</p>
+                <div>
+                    <h2>گزارش تحلیلی</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;" id="last-update"></p>
                 </div>
-                <div class="last-update-text" id="last-update"><i class="fa-regular fa-clock"></i> در حال دریافت...</div>
+                <button class="big-share-btn" id="big-share-btn">
+                    <i class="fa-solid fa-share-from-square"></i> اشتراک‌گذاری گزارش
+                </button>
             </div>
 
-            <div class="bento-grid" id="district-container"></div>
+            <div class="chart-container-wrapper">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <h3 style="font-weight: 800; font-size: 1.2rem; color: var(--text-main);">میانگین روزانه</h3>
+                    <span style="font-size: 0.8rem; color: var(--text-muted); background: var(--bg-body); padding: 4px 12px; border-radius: 20px;">۷ روزه</span>
+                </div>
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="aqiTrendChart"></canvas>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 20px; font-weight: 800; color: var(--text-main);">آنالیز آلاینده‌ها</h3>
+            <div class="bento-grid" id="pollutant-container"></div>
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3><i class="fa-solid fa-wind" style="color: var(--primary)"></i> هوای‌ما</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">پلتفرم متن‌باز نمایش کیفیت هوای شهرهای ایران.</p>
-                </div>
-                <!-- Links simplified for demo -->
-                <div class="footer-links">
-                    <h4>دسترسی سریع</h4>
-                    <ul><li><a href="#">خانه</a></li><li><a href="#map">نقشه</a></li></ul>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>طراحی و توسعه توسط xsparvin © ۱۴۰۳</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // --- Full Data from First Code ---
+        // --- Configuration ---
+        const API_URL = "https://air-quality-api.open-meteo.com/v1/air-quality";
+        const WEATHER_URL = "https://api.open-meteo.com/v1/forecast";
+
+        // Full Data
         const cityData = {
             tehran: {
                 name: "تهران",
                 center: [35.6892, 51.3890],
-                districts: [
-                    { name: "منطقه ۱", lat: 35.7448, lng: 51.3753, aqi: 85 },
-                    { name: "منطقه ۲", lat: 35.7269, lng: 51.3305, aqi: 112 },
-                    { name: "منطقه ۳", lat: 35.7410, lng: 51.4377, aqi: 145 },
-                    { name: "منطقه ۴", lat: 35.7179, lng: 51.4896, aqi: 178 },
-                    { name: "منطقه ۵", lat: 35.7245, lng: 51.3126, aqi: 95 },
-                    { name: "منطقه ۶", lat: 35.7153, lng: 51.4043, aqi: 132 },
-                    { name: "منطقه ۷", lat: 35.7008, lng: 51.4221, aqi: 168 },
-                    { name: "منطقه ۸", lat: 35.6719, lng: 51.4743, aqi: 195 },
-                    { name: "منطقه ۹", lat: 35.6747, lng: 51.3470, aqi: 155 },
-                    { name: "منطقه ۱۰", lat: 35.6892, lng: 51.3608, aqi: 142 }
-                ]
+                districts: [{
+                    name: "تجریش",
+                    lat: 35.8080,
+                    lng: 51.4284
+                }, {
+                    name: "سعادت‌آباد",
+                    lat: 35.7769,
+                    lng: 51.3705
+                }, {
+                    name: "ونک",
+                    lat: 35.7584,
+                    lng: 51.3917
+                }, {
+                    name: "پونک",
+                    lat: 35.7681,
+                    lng: 51.3289
+                }, {
+                    name: "نارمک",
+                    lat: 35.7489,
+                    lng: 51.5208
+                }, {
+                    name: "پیروزی",
+                    lat: 35.6899,
+                    lng: 51.4795
+                }, {
+                    name: "انقلاب",
+                    lat: 35.7011,
+                    lng: 51.3916
+                }, {
+                    name: "آزادی",
+                    lat: 35.7005,
+                    lng: 51.3533
+                }, {
+                    name: "بازار",
+                    lat: 35.6723,
+                    lng: 51.4225
+                }, {
+                    name: "شهرری",
+                    lat: 35.5901,
+                    lng: 51.4394
+                }]
             },
             mashhad: {
                 name: "مشهد",
                 center: [36.2605, 59.6168],
-                districts: [
-                    { name: "منطقه ۱", lat: 36.3209, lng: 59.5675, aqi: 105 },
-                    { name: "منطقه ۲", lat: 36.2876, lng: 59.5962, aqi: 128 },
-                    { name: "منطقه ۳", lat: 36.3025, lng: 59.5524, aqi: 95 },
-                    { name: "منطقه ۴", lat: 36.2658, lng: 59.6321, aqi: 145 },
-                    { name: "منطقه ۵", lat: 36.3367, lng: 59.5053, aqi: 112 },
-                    { name: "منطقه ۶", lat: 36.3541, lng: 59.4872, aqi: 98 }
-                ]
+                districts: [{
+                    name: "سجاد",
+                    lat: 36.3209,
+                    lng: 59.5675
+                }, {
+                    name: "احمدآباد",
+                    lat: 36.2954,
+                    lng: 59.5760
+                }, {
+                    name: "تقی‌آباد",
+                    lat: 36.2876,
+                    lng: 59.5962
+                }, {
+                    name: "حرم",
+                    lat: 36.2875,
+                    lng: 59.6152
+                }, {
+                    name: "وکیل‌آباد",
+                    lat: 36.3367,
+                    lng: 59.5053
+                }]
             },
             isfahan: {
                 name: "اصفهان",
                 center: [32.6546, 51.6680],
-                districts: [
-                    { name: "منطقه ۱", lat: 32.6708, lng: 51.6650, aqi: 125 },
-                    { name: "منطقه ۲", lat: 32.6345, lng: 51.6547, aqi: 145 },
-                    { name: "منطقه ۳", lat: 32.6201, lng: 51.6975, aqi: 168 },
-                    { name: "منطقه ۴", lat: 32.6034, lng: 51.6523, aqi: 155 },
-                    { name: "منطقه ۵", lat: 32.6321, lng: 51.6128, aqi: 135 },
-                    { name: "منطقه ۶", lat: 32.6832, lng: 51.6120, aqi: 118 }
-                ]
+                districts: [{
+                    name: "چهارباغ",
+                    lat: 32.6708,
+                    lng: 51.6650
+                }, {
+                    name: "بزرگمهر",
+                    lat: 32.6457,
+                    lng: 51.6898
+                }, {
+                    name: "کاوه",
+                    lat: 32.6845,
+                    lng: 51.6734
+                }, {
+                    name: "دروازه شیراز",
+                    lat: 32.6201,
+                    lng: 51.6698
+                }]
             },
             karaj: {
                 name: "کرج",
                 center: [35.8272, 50.9484],
-                districts: [
-                    { name: "منطقه ۱", lat: 35.8272, lng: 50.9484, aqi: 115 },
-                    { name: "منطقه ۲", lat: 35.8214, lng: 50.9775, aqi: 135 },
-                    { name: "منطقه ۳", lat: 35.8045, lng: 50.9643, aqi: 155 },
-                    { name: "منطقه ۴", lat: 35.7987, lng: 50.9925, aqi: 142 },
-                    { name: "منطقه ۵", lat: 35.8123, lng: 51.0056, aqi: 128 },
-                    { name: "منطقه ۶", lat: 35.8341, lng: 50.9912, aqi: 118 }
-                ]
+                districts: [{
+                    name: "عظیمیه",
+                    lat: 35.8272,
+                    lng: 50.9484
+                }, {
+                    name: "گوهردشت",
+                    lat: 35.8423,
+                    lng: 50.9701
+                }, {
+                    name: "مهرشهر",
+                    lat: 35.8012,
+                    lng: 50.9089
+                }, {
+                    name: "جهانشهر",
+                    lat: 35.8210,
+                    lng: 50.9823
+                }]
             },
             shiraz: {
                 name: "شیراز",
                 center: [29.5926, 52.5836],
-                districts: [
-                    { name: "منطقه ۱", lat: 29.6355, lng: 52.5314, aqi: 95 },
-                    { name: "منطقه ۲", lat: 29.6228, lng: 52.5021, aqi: 112 },
-                    { name: "منطقه ۳", lat: 29.6084, lng: 52.5427, aqi: 128 },
-                    { name: "منطقه ۴", lat: 29.5926, lng: 52.5836, aqi: 145 },
-                    { name: "منطقه ۵", lat: 29.5753, lng: 52.5621, aqi: 135 },
-                    { name: "منطقه ۶", lat: 29.5587, lng: 52.5128, aqi: 118 }
-                ]
+                districts: [{
+                    name: "معالی‌آباد",
+                    lat: 29.6645,
+                    lng: 52.4789
+                }, {
+                    name: "زند",
+                    lat: 29.6154,
+                    lng: 52.5387
+                }, {
+                    name: "ستارخان",
+                    lat: 29.6321,
+                    lng: 52.5023
+                }, {
+                    name: "ارم",
+                    lat: 29.6389,
+                    lng: 52.5265
+                }]
             },
             tabriz: {
                 name: "تبریز",
                 center: [38.0962, 46.2738],
-                districts: [
-                    { name: "منطقه ۱", lat: 38.0805, lng: 46.3012, aqi: 85 },
-                    { name: "منطقه ۲", lat: 38.0689, lng: 46.3228, aqi: 105 },
-                    { name: "منطقه ۳", lat: 38.0567, lng: 46.2954, aqi: 125 },
-                    { name: "منطقه ۴", lat: 38.0442, lng: 46.2789, aqi: 145 },
-                    { name: "منطقه ۵", lat: 38.0318, lng: 46.2523, aqi: 135 },
-                    { name: "منطقه ۶", lat: 38.0185, lng: 46.2287, aqi: 118 }
-                ]
-            },
-            qom: {
-                name: "قم",
-                center: [34.6461, 50.8790],
-                districts: [
-                    { name: "مرکز شهر", lat: 34.6461, lng: 50.8790, aqi: 165 },
-                    { name: "منطقه صنعتی", lat: 34.6250, lng: 50.8900, aqi: 185 },
-                    { name: "منطقه مسکونی ۱", lat: 34.6350, lng: 50.8650, aqi: 152 },
-                    { name: "منطقه مسکونی ۲", lat: 34.6580, lng: 50.8950, aqi: 142 },
-                    { name: "منطقه آموزشی", lat: 34.6400, lng: 50.9050, aqi: 138 }
-                ]
+                districts: [{
+                    name: "آبرسان",
+                    lat: 38.0789,
+                    lng: 46.3123
+                }, {
+                    name: "ولیعصر",
+                    lat: 38.0856,
+                    lng: 46.3345
+                }, {
+                    name: "ائل‌گلی",
+                    lat: 38.0267,
+                    lng: 46.3789
+                }, {
+                    name: "باغ‌شمال",
+                    lat: 38.0678,
+                    lng: 46.2987
+                }]
             },
             ahvaz: {
                 name: "اهواز",
                 center: [31.3183, 48.6706],
-                districts: [
-                    { name: "مرکز شهر", lat: 31.3183, lng: 48.6706, aqi: 185 },
-                    { name: "منطقه شمالی", lat: 31.3383, lng: 48.6806, aqi: 175 },
-                    { name: "منطقه جنوبی", lat: 31.2983, lng: 48.6606, aqi: 195 },
-                    { name: "منطقه شرقی", lat: 31.3183, lng: 48.7006, aqi: 165 },
-                    { name: "منطقه غربی", lat: 31.3183, lng: 48.6406, aqi: 205 }
-                ]
+                districts: [{
+                    name: "کیانپارس",
+                    lat: 31.3456,
+                    lng: 48.6876
+                }, {
+                    name: "نادری",
+                    lat: 31.3210,
+                    lng: 48.6712
+                }, {
+                    name: "زیتون",
+                    lat: 31.3567,
+                    lng: 48.7012
+                }, {
+                    name: "گلستان",
+                    lat: 31.3012,
+                    lng: 48.6543
+                }]
             },
-            kermanshah: {
-                name: "کرمانشاه",
-                center: [34.3277, 47.0778],
-                districts: [
-                    { name: "مرکز شهر", lat: 34.3277, lng: 47.0778, aqi: 125 },
-                    { name: "منطقه شمالی", lat: 34.3477, lng: 47.0878, aqi: 135 },
-                    { name: "منطقه جنوبی", lat: 34.3077, lng: 47.0678, aqi: 155 },
-                    { name: "منطقه شرقی", lat: 34.3277, lng: 47.1078, aqi: 145 },
-                    { name: "منطقه غربی", lat: 34.3277, lng: 47.0478, aqi: 142 }
-                ]
-            },
-            urmia: {
-                name: "ارومیه",
-                center: [37.5522, 45.0760],
-                districts: [
-                    { name: "مرکز شهر", lat: 37.5522, lng: 45.0760, aqi: 95 },
-                    { name: "منطقه شمالی", lat: 37.5722, lng: 45.0860, aqi: 105 },
-                    { name: "منطقه جنوبی", lat: 37.5322, lng: 45.0660, aqi: 115 },
-                    { name: "منطقه شرقی", lat: 37.5522, lng: 45.1060, aqi: 125 },
-                    { name: "منطقه غربی", lat: 37.5522, lng: 45.0460, aqi: 135 }
-                ]
+            qom: {
+                name: "قم",
+                center: [34.6461, 50.8790],
+                districts: [{
+                    name: "حرم",
+                    lat: 34.6461,
+                    lng: 50.8790
+                }, {
+                    name: "زنبیل‌آباد",
+                    lat: 34.6234,
+                    lng: 50.8645
+                }, {
+                    name: "پردیسان",
+                    lat: 34.5890,
+                    lng: 50.8123
+                }]
             },
             rasht: {
                 name: "رشت",
                 center: [37.2804, 49.5832],
-                districts: [
-                    { name: "مرکز شهر", lat: 37.2804, lng: 49.5832, aqi: 85 },
-                    { name: "منطقه شمالی", lat: 37.3004, lng: 49.5932, aqi: 95 },
-                    { name: "منطقه جنوبی", lat: 37.2604, lng: 49.5732, aqi: 105 },
-                    { name: "منطقه شرقی", lat: 37.2804, lng: 49.6132, aqi: 115 },
-                    { name: "منطقه غربی", lat: 37.2804, lng: 49.5532, aqi: 125 }
-                ]
+                districts: [{
+                    name: "گلسار",
+                    lat: 37.3012,
+                    lng: 49.5789
+                }, {
+                    name: "شهرداری",
+                    lat: 37.2804,
+                    lng: 49.5832
+                }, {
+                    name: "منظریه",
+                    lat: 37.2654,
+                    lng: 49.5912
+                }]
+            },
+            kermanshah: {
+                name: "کرمانشاه",
+                center: [34.3277, 47.0778],
+                districts: [{
+                    name: "مرکز",
+                    lat: 34.3277,
+                    lng: 47.0778
+                }, {
+                    name: "طاق‌بستان",
+                    lat: 34.3567,
+                    lng: 47.1012
+                }]
+            },
+            urmia: {
+                name: "ارومیه",
+                center: [37.5522, 45.0760],
+                districts: [{
+                    name: "مرکز",
+                    lat: 37.5522,
+                    lng: 45.0760
+                }, {
+                    name: "دانشکده",
+                    lat: 37.5345,
+                    lng: 45.0654
+                }]
             },
             zahedan: {
                 name: "زاهدان",
                 center: [29.4517, 60.8841],
-                districts: [
-                    { name: "مرکز شهر", lat: 29.4517, lng: 60.8841, aqi: 135 },
-                    { name: "منطقه شمالی", lat: 29.4717, lng: 60.8941, aqi: 145 },
-                    { name: "منطقه جنوبی", lat: 29.4317, lng: 60.8741, aqi: 155 },
-                    { name: "منطقه شرقی", lat: 29.4517, lng: 60.9141, aqi: 165 },
-                    { name: "منطقه غربی", lat: 29.4517, lng: 60.8541, aqi: 142 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 29.4517,
+                    lng: 60.8841
+                }]
             },
             kerman: {
                 name: "کرمان",
                 center: [30.2839, 57.0834],
-                districts: [
-                    { name: "مرکز شهر", lat: 30.2839, lng: 57.0834, aqi: 125 },
-                    { name: "منطقه شمالی", lat: 30.3039, lng: 57.0934, aqi: 135 },
-                    { name: "منطقه جنوبی", lat: 30.2639, lng: 57.0734, aqi: 145 },
-                    { name: "منطقه شرقی", lat: 30.2839, lng: 57.1134, aqi: 155 },
-                    { name: "منطقه غربی", lat: 30.2839, lng: 57.0534, aqi: 165 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 30.2839,
+                    lng: 57.0834
+                }]
             },
             arak: {
                 name: "اراک",
                 center: [34.0920, 49.6890],
-                districts: [
-                    { name: "مرکز شهر", lat: 34.0920, lng: 49.6890, aqi: 145 },
-                    { name: "منطقه صنعتی", lat: 34.0720, lng: 49.7090, aqi: 185 },
-                    { name: "منطقه مسکونی ۱", lat: 34.1020, lng: 49.6690, aqi: 152 },
-                    { name: "منطقه مسکونی ۲", lat: 34.0820, lng: 49.6490, aqi: 142 },
-                    { name: "منطقه آموزشی", lat: 34.0920, lng: 49.7290, aqi: 138 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 34.0920,
+                    lng: 49.6890
+                }, {
+                    name: "صنعت",
+                    lat: 34.0754,
+                    lng: 49.7012
+                }]
             },
             yazd: {
                 name: "یزد",
                 center: [31.8974, 54.3569],
-                districts: [
-                    { name: "مرکز شهر", lat: 31.8974, lng: 54.3569, aqi: 135 },
-                    { name: "منطقه شمالی", lat: 31.9174, lng: 54.3669, aqi: 145 },
-                    { name: "منطقه جنوبی", lat: 31.8774, lng: 54.3469, aqi: 155 },
-                    { name: "منطقه شرقی", lat: 31.8974, lng: 54.3869, aqi: 125 },
-                    { name: "منطقه غربی", lat: 31.8974, lng: 54.3269, aqi: 115 }
-                ]
+                districts: [{
+                    name: "صفائیه",
+                    lat: 31.8654,
+                    lng: 54.3876
+                }, {
+                    name: "امیرچقماق",
+                    lat: 31.8974,
+                    lng: 54.3569
+                }]
             },
             bandarabbas: {
                 name: "بندرعباس",
                 center: [27.1830, 56.2666],
-                districts: [
-                    { name: "مرکز شهر", lat: 27.1830, lng: 56.2666, aqi: 95 },
-                    { name: "منطقه بندری", lat: 27.1630, lng: 56.2866, aqi: 115 },
-                    { name: "منطقه مسکونی ۱", lat: 27.1930, lng: 56.2466, aqi: 105 },
-                    { name: "منطقه مسکونی ۲", lat: 27.1730, lng: 56.2266, aqi: 125 },
-                    { name: "منطقه تجاری", lat: 27.1830, lng: 56.3066, aqi: 135 }
-                ]
+                districts: [{
+                    name: "ساحلی",
+                    lat: 27.1754,
+                    lng: 56.2765
+                }, {
+                    name: "مرکز",
+                    lat: 27.1830,
+                    lng: 56.2666
+                }]
             },
             hamedan: {
                 name: "همدان",
                 center: [34.7989, 48.5150],
-                districts: [
-                    { name: "مرکز شهر", lat: 34.7989, lng: 48.5150, aqi: 115 },
-                    { name: "منطقه شمالی", lat: 34.8189, lng: 48.5250, aqi: 125 },
-                    { name: "منطقه جنوبی", lat: 34.7789, lng: 48.5050, aqi: 135 },
-                    { name: "منطقه شرقی", lat: 34.7989, lng: 48.5450, aqi: 145 },
-                    { name: "منطقه غربی", lat: 34.7989, lng: 48.4850, aqi: 155 }
-                ]
+                districts: [{
+                    name: "بوعلی",
+                    lat: 34.7989,
+                    lng: 48.5150
+                }]
             },
             qazvin: {
                 name: "قزوین",
                 center: [36.2739, 50.0040],
-                districts: [
-                    { name: "مرکز شهر", lat: 36.2739, lng: 50.0040, aqi: 125 },
-                    { name: "منطقه شمالی", lat: 36.2939, lng: 50.0140, aqi: 135 },
-                    { name: "منطقه جنوبی", lat: 36.2539, lng: 49.9940, aqi: 145 },
-                    { name: "منطقه شرقی", lat: 36.2739, lng: 50.0340, aqi: 115 },
-                    { name: "منطقه غربی", lat: 36.2739, lng: 49.9740, aqi: 105 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 36.2739,
+                    lng: 50.0040
+                }]
             },
             zanjan: {
                 name: "زنجان",
                 center: [36.6769, 48.4963],
-                districts: [
-                    { name: "مرکز شهر", lat: 36.6769, lng: 48.4963, aqi: 105 },
-                    { name: "منطقه شمالی", lat: 36.6969, lng: 48.5063, aqi: 115 },
-                    { name: "منطقه جنوبی", lat: 36.6569, lng: 48.4863, aqi: 125 },
-                    { name: "منطقه شرقی", lat: 36.6769, lng: 48.5263, aqi: 135 },
-                    { name: "منطقه غربی", lat: 36.6769, lng: 48.4663, aqi: 145 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 36.6769,
+                    lng: 48.4963
+                }]
             },
             sanandaj: {
                 name: "سنندج",
                 center: [35.3219, 46.9862],
-                districts: [
-                    { name: "مرکز شهر", lat: 35.3219, lng: 46.9862, aqi: 95 },
-                    { name: "منطقه شمالی", lat: 35.3419, lng: 46.9962, aqi: 105 },
-                    { name: "منطقه جنوبی", lat: 35.3019, lng: 46.9762, aqi: 115 },
-                    { name: "منطقه شرقی", lat: 35.3219, lng: 47.0162, aqi: 125 },
-                    { name: "منطقه غربی", lat: 35.3219, lng: 46.9562, aqi: 135 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 35.3219,
+                    lng: 46.9862
+                }]
             },
             gorgan: {
                 name: "گرگان",
                 center: [36.8456, 54.4393],
-                districts: [
-                    { name: "مرکز شهر", lat: 36.8456, lng: 54.4393, aqi: 85 },
-                    { name: "منطقه شمالی", lat: 36.8656, lng: 54.4493, aqi: 95 },
-                    { name: "منطقه جنوبی", lat: 36.8256, lng: 54.4293, aqi: 105 },
-                    { name: "منطقه شرقی", lat: 36.8456, lng: 54.4693, aqi: 115 },
-                    { name: "منطقه غربی", lat: 36.8456, lng: 54.4093, aqi: 125 }
-                ]
+                districts: [{
+                    name: "ناهارخوران",
+                    lat: 36.8012,
+                    lng: 54.4567
+                }, {
+                    name: "مرکز",
+                    lat: 36.8456,
+                    lng: 54.4393
+                }]
             },
             sari: {
                 name: "ساری",
                 center: [36.5656, 53.0586],
-                districts: [
-                    { name: "مرکز شهر", lat: 36.5656, lng: 53.0586, aqi: 75 },
-                    { name: "منطقه شمالی", lat: 36.5856, lng: 53.0686, aqi: 85 },
-                    { name: "منطقه جنوبی", lat: 36.5456, lng: 53.0486, aqi: 95 },
-                    { name: "منطقه شرقی", lat: 36.5656, lng: 53.0886, aqi: 105 },
-                    { name: "منطقه غربی", lat: 36.5656, lng: 53.0286, aqi: 115 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 36.5656,
+                    lng: 53.0586
+                }]
             },
             birjand: {
                 name: "بیرجند",
                 center: [32.8731, 59.2142],
-                districts: [
-                    { name: "مرکز شهر", lat: 32.8731, lng: 59.2142, aqi: 105 },
-                    { name: "منطقه شمالی", lat: 32.8931, lng: 59.2242, aqi: 115 },
-                    { name: "منطقه جنوبی", lat: 32.8531, lng: 59.2042, aqi: 125 },
-                    { name: "منطقه شرقی", lat: 32.8731, lng: 59.2442, aqi: 135 },
-                    { name: "منطقه غربی", lat: 32.8731, lng: 59.1842, aqi: 145 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 32.8731,
+                    lng: 59.2142
+                }]
             },
             bojnord: {
                 name: "بجنورد",
                 center: [37.4750, 57.3214],
-                districts: [
-                    { name: "مرکز شهر", lat: 37.4750, lng: 57.3214, aqi: 95 },
-                    { name: "منطقه شمالی", lat: 37.4950, lng: 57.3314, aqi: 105 },
-                    { name: "منطقه جنوبی", lat: 37.4550, lng: 57.3114, aqi: 115 },
-                    { name: "منطقه شرقی", lat: 37.4750, lng: 57.3514, aqi: 125 },
-                    { name: "منطقه غربی", lat: 37.4750, lng: 57.2914, aqi: 135 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 37.4750,
+                    lng: 57.3214
+                }]
             },
             shahrekord: {
                 name: "شهرکرد",
                 center: [32.3269, 50.8644],
-                districts: [
-                    { name: "مرکز شهر", lat: 32.3269, lng: 50.8644, aqi: 85 },
-                    { name: "منطقه شمالی", lat: 32.3469, lng: 50.8744, aqi: 95 },
-                    { name: "منطقه جنوبی", lat: 32.3069, lng: 50.8544, aqi: 105 },
-                    { name: "منطقه شرقی", lat: 32.3269, lng: 50.8944, aqi: 115 },
-                    { name: "منطقه غربی", lat: 32.3269, lng: 50.8344, aqi: 125 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 32.3269,
+                    lng: 50.8644
+                }]
             },
             semnan: {
                 name: "سمنان",
                 center: [35.5729, 53.3971],
-                districts: [
-                    { name: "مرکز شهر", lat: 35.5729, lng: 53.3971, aqi: 115 },
-                    { name: "منطقه شمالی", lat: 35.5929, lng: 53.4071, aqi: 125 },
-                    { name: "منطقه جنوبی", lat: 35.5529, lng: 53.3871, aqi: 135 },
-                    { name: "منطقه شرقی", lat: 35.5729, lng: 53.4271, aqi: 145 },
-                    { name: "منطقه غربی", lat: 35.5729, lng: 53.3671, aqi: 155 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 35.5729,
+                    lng: 53.3971
+                }]
             },
             yasuj: {
                 name: "یاسوج",
                 center: [30.6680, 51.5879],
-                districts: [
-                    { name: "مرکز شهر", lat: 30.6680, lng: 51.5879, aqi: 75 },
-                    { name: "منطقه شمالی", lat: 30.6880, lng: 51.5979, aqi: 85 },
-                    { name: "منطقه جنوبی", lat: 30.6480, lng: 51.5779, aqi: 95 },
-                    { name: "منطقه شرقی", lat: 30.6680, lng: 51.6179, aqi: 105 },
-                    { name: "منطقه غربی", lat: 30.6680, lng: 51.5579, aqi: 115 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 30.6680,
+                    lng: 51.5879
+                }]
             },
             ardabil: {
                 name: "اردبیل",
                 center: [38.2491, 48.3003],
-                districts: [
-                    { name: "مرکز شهر", lat: 38.2491, lng: 48.3003, aqi: 85 },
-                    { name: "منطقه شمالی", lat: 38.2691, lng: 48.3103, aqi: 95 },
-                    { name: "منطقه جنوبی", lat: 38.2291, lng: 48.2903, aqi: 105 },
-                    { name: "منطقه شرقی", lat: 38.2491, lng: 48.3303, aqi: 115 },
-                    { name: "منطقه غربی", lat: 38.2491, lng: 48.2703, aqi: 125 }
-                ]
+                districts: [{
+                    name: "شورابیل",
+                    lat: 38.2234,
+                    lng: 48.2812
+                }, {
+                    name: "مرکز",
+                    lat: 38.2491,
+                    lng: 48.3003
+                }]
             },
             ilam: {
                 name: "ایلام",
                 center: [33.6384, 46.4227],
-                districts: [
-                    { name: "مرکز شهر", lat: 33.6384, lng: 46.4227, aqi: 95 },
-                    { name: "منطقه شمالی", lat: 33.6584, lng: 46.4327, aqi: 105 },
-                    { name: "منطقه جنوبی", lat: 33.6184, lng: 46.4127, aqi: 115 },
-                    { name: "منطقه شرقی", lat: 33.6384, lng: 46.4527, aqi: 125 },
-                    { name: "منطقه غربی", lat: 33.6384, lng: 46.3927, aqi: 135 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 33.6384,
+                    lng: 46.4227
+                }]
             },
             bushehr: {
                 name: "بوشهر",
                 center: [28.9234, 50.8203],
-                districts: [
-                    { name: "مرکز شهر", lat: 28.9234, lng: 50.8203, aqi: 105 },
-                    { name: "منطقه بندری", lat: 28.9034, lng: 50.8403, aqi: 125 },
-                    { name: "منطقه مسکونی ۱", lat: 28.9334, lng: 50.8003, aqi: 115 },
-                    { name: "منطقه مسکونی ۲", lat: 28.9134, lng: 50.7803, aqi: 135 },
-                    { name: "منطقه تجاری", lat: 28.9234, lng: 50.8603, aqi: 145 }
-                ]
+                districts: [{
+                    name: "مرکز",
+                    lat: 28.9234,
+                    lng: 50.8203
+                }]
             }
         };
 
         const aqiColors = {
-            good: { color: '#10b981', text: 'پاک', var: '--aqi-good' },
-            moderate: { color: '#f59e0b', text: 'سالم', var: '--aqi-moderate' },
-            unhealthySensitive: { color: '#f97316', text: 'ناسالم حساس', var: '--aqi-sensitive' },
-            unhealthy: { color: '#ef4444', text: 'ناسالم', var: '--aqi-unhealthy' },
-            veryUnhealthy: { color: '#a855f7', text: 'بسیار ناسالم', var: '--aqi-very-unhealthy' },
-            hazardous: { color: '#7e22ce', text: 'خطرناک', var: '--aqi-hazardous' }
+            good: '#10b981',
+            moderate: '#f59e0b',
+            sensitive: '#f97316',
+            unhealthy: '#ef4444',
+            veryUnhealthy: '#a855f7',
+            hazardous: '#7e22ce'
         };
 
-        // --- Logic ---
         let currentCity = 'tehran';
+        let currentCustomLoc = null;
         let markers = [];
-        let autoRefreshInterval = null;
+        let heatLayer = null;
+        let isHeatmapActive = false;
+        let currentDistrictsData = [];
+        let trendChartInstance = null;
+        let savedBookmarks = JSON.parse(localStorage.getItem('airQualityBookmarks')) || [];
+        const loader = document.getElementById('loading-overlay');
 
-        // Initialize Map
-        const map = L.map('iran-air-map', { zoomControl: false }).setView(cityData['tehran'].center, 11);
+        const map = L.map('iran-air-map', {
+            zoomControl: false
+        }).setView([35.6892, 51.3890], 12);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap &copy; CartoDB', subdomains: 'abcd', maxZoom: 19
+            attribution: 'OSM'
         }).addTo(map);
 
-        function getAqiDetails(value) {
-            if (value <= 50) return { ...aqiColors.good, level: 'good' };
-            if (value <= 100) return { ...aqiColors.moderate, level: 'moderate' };
-            if (value <= 150) return { ...aqiColors.unhealthySensitive, level: 'sensitive' };
-            if (value <= 200) return { ...aqiColors.unhealthy, level: 'unhealthy' };
-            if (value <= 300) return { ...aqiColors.veryUnhealthy, level: 'veryUnhealthy' };
-            return { ...aqiColors.hazardous, level: 'hazardous' };
+        // --- Theme Logic ---
+        const themeBtn = document.getElementById('theme-btn');
+        const themeIcon = themeBtn.querySelector('i');
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.getAttribute('data-theme') === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+            if (trendChartInstance) trendChartInstance.update();
+        }
+        themeBtn.addEventListener('click', toggleTheme);
+
+        // --- Fetch Functions ---
+        async function fetchMultiLocations(districts) {
+            const lats = districts.map(d => d.lat).join(',');
+            const lngs = districts.map(d => d.lng).join(',');
+            const url = `${API_URL}?latitude=${lats}&longitude=${lngs}&current=us_aqi,pm10,pm2_5,nitrogen_dioxide,sulphur_dioxide,ozone,carbon_monoxide&hourly=us_aqi&timezone=Asia/Tehran&past_days=2&forecast_days=5`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('API Error');
+            return response.json();
         }
 
-        function renderCitySelector() {
-            const container = document.getElementById('city-selector');
-            const cities = Object.keys(cityData);
-            
-            cities.forEach(cityKey => {
-                const city = cityData[cityKey];
-                const btn = document.createElement('div');
-                btn.className = `city-pill ${cityKey === currentCity ? 'active' : ''}`;
-                btn.textContent = city.name;
-                btn.onclick = () => changeCity(cityKey);
-                container.appendChild(btn);
-            });
+        async function fetchSingleLocation(lat, lng) {
+            return fetchMultiLocations([{
+                lat,
+                lng
+            }]);
         }
 
-        function updateMap() {
-            // Clear markers
+        async function fetchWeather(lat, lng) {
+            const url = `${WEATHER_URL}?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&timezone=Asia/Tehran`;
+            const response = await fetch(url);
+            if (response.ok) return response.json();
+            return null;
+        }
+
+        // --- Core Load Logic ---
+        async function loadData(type, payload) {
+            loader.style.display = 'flex';
+
+            // Cleanup Map
             markers.forEach(m => map.removeLayer(m));
             markers = [];
+            if (heatLayer) map.removeLayer(heatLayer);
 
-            const cityInfo = cityData[currentCity];
-            const districts = cityInfo.districts || [];
-            
-            districts.forEach(d => {
-                const aqiData = getAqiDetails(d.aqi);
-                
-                const iconHtml = `<div class="marker-pin" style="background-color: ${aqiData.color};">${d.aqi}</div>`;
-                const icon = L.divIcon({
-                    className: 'custom-aqi-marker',
-                    html: iconHtml,
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 20]
+            try {
+                let apiData;
+                let districtsToRender = [];
+                let displayTitle = "";
+                let centerLat, centerLng;
+
+                if (type === 'city') {
+                    const city = cityData[payload];
+                    displayTitle = city.name;
+                    districtsToRender = city.districts;
+                    centerLat = city.center[0];
+                    centerLng = city.center[1];
+
+                    // NEW: Fit Bounds to see all locations
+                    const bounds = L.latLngBounds(districtsToRender.map(d => [d.lat, d.lng]));
+                    map.fitBounds(bounds, {
+                        padding: [50, 50],
+                        maxZoom: 14
+                    });
+
+                    const response = await fetchMultiLocations(districtsToRender);
+                    apiData = Array.isArray(response) ? response : [response];
+                    currentCustomLoc = null;
+                } else if (type === 'custom') {
+                    displayTitle = payload.name;
+                    districtsToRender = [{
+                        name: payload.name,
+                        lat: payload.lat,
+                        lng: payload.lng
+                    }];
+                    centerLat = payload.lat;
+                    centerLng = payload.lng;
+                    map.setView([centerLat, centerLng], 13);
+                    const response = await fetchSingleLocation(payload.lat, payload.lng);
+                    apiData = [response];
+                    currentCustomLoc = {
+                        lat: payload.lat,
+                        lng: payload.lng
+                    };
+                }
+
+                // Weather
+                const weatherData = await fetchWeather(centerLat, centerLng);
+                if (weatherData) updateWeatherUI(weatherData.current);
+
+                // Process Air Data
+                let totalCurrentAqi = 0;
+                let validCount = 0;
+                let firstLocationData = apiData[0];
+                currentDistrictsData = [];
+
+                apiData.forEach((data, index) => {
+                    const dInfo = districtsToRender[index];
+                    const aqi = data.current.us_aqi;
+
+                    if (aqi) {
+                        totalCurrentAqi += aqi;
+                        validCount++;
+                        currentDistrictsData.push({
+                            lat: dInfo.lat,
+                            lng: dInfo.lng,
+                            aqi: aqi,
+                            name: dInfo.name
+                        });
+                    }
                 });
 
-                const marker = L.marker([d.lat, d.lng], { icon: icon })
-                    .bindPopup(`<div style="text-align:center;"><h4 style="margin:0 0 5px 0">${d.name}</h4><span style="color:${aqiData.color}; font-weight:bold">${aqiData.text}</span></div>`)
-                    .addTo(map);
-                
-                markers.push(marker);
-            });
+                // Render Map
+                renderMapLayer();
 
-            renderCards(districts);
-            const now = new Date();
-            document.getElementById('last-update').innerHTML = `<i class="fa-regular fa-clock"></i> بروزرسانی: ${now.toLocaleTimeString('fa-IR', {hour: '2-digit', minute:'2-digit'})}`;
+                const avgAqi = validCount > 0 ? Math.round(totalCurrentAqi / validCount) : 0;
+                const dailyStats = calculateCityDailyStats(apiData);
+
+                // Update UI
+                updateDynamicBackground(avgAqi);
+                document.getElementById('health-city-name').textContent = displayTitle;
+                updateHealthWidget(avgAqi);
+                renderPollutants(firstLocationData.current, firstLocationData.current_units);
+                renderDailyChart(dailyStats);
+                generateSmartForecast(firstLocationData.hourly);
+                document.getElementById('last-update').textContent = `بروزرسانی: ${new Date().toLocaleTimeString('fa-IR')}`;
+
+            } catch (error) {
+                console.error(error);
+                alert('خطا در دریافت اطلاعات.');
+            } finally {
+                loader.style.display = 'none';
+            }
         }
 
-        function renderCards(districts) {
-            const container = document.getElementById('district-container');
-            container.innerHTML = '';
+        // --- Map Visualizers ---
+        function renderMapLayer() {
+            // Clear layers
+            markers.forEach(m => map.removeLayer(m));
+            if (heatLayer) map.removeLayer(heatLayer);
 
-            districts.forEach(d => {
-                const aqiData = getAqiDetails(d.aqi);
-                const card = document.createElement('div');
-                card.className = 'bento-card';
-                
-                card.innerHTML = `
-                    <div class="card-header">
-                        <span class="district-title">${d.name}</span>
-                        <span class="aqi-badge" style="color: ${aqiData.color}">${aqiData.text}</span>
-                    </div>
-                    <div>
-                        <div class="aqi-number" style="color: ${aqiData.color}">${d.aqi}</div>
-                        <div class="aqi-status" style="color: ${aqiData.color}">وضعیت: ${aqiData.text}</div>
-                        <div class="aqi-desc">${getRecommendation(aqiData.level)}</div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+            if (isHeatmapActive) {
+                // Ensure leaflet-heat loaded
+                if (typeof L.heatLayer !== 'function') {
+                    console.error("Heatmap plugin not loaded");
+                    alert("خطا در بارگذاری نقشه حرارتی");
+                    return;
+                }
 
-        function getRecommendation(level) {
-            const msgs = {
-                good: 'هوا عالی است. از هوای پاک لذت ببرید.',
-                moderate: 'کیفیت هوا قابل قبول است.',
-                sensitive: 'افراد حساس (کودکان، سالمندان) فعالیت سنگین را کاهش دهند.',
-                unhealthy: 'برای همه ناسالم است. از تردد غیرضروری بپرهیزید.',
-                veryUnhealthy: 'هشدار جدی بهداشتی. در خانه بمانید.',
-                hazardous: 'وضعیت اضطراری. خروج از منزل ممنوع.'
-            };
-            return msgs[level] || '';
-        }
+                const maxVal = Math.max(...currentDistrictsData.map(d => d.aqi), 150);
 
-        function changeCity(cityKey) {
-            currentCity = cityKey;
-            const cityInfo = cityData[cityKey];
-            
-            // Update UI
-            document.querySelectorAll('.city-pill').forEach(el => {
-                el.classList.toggle('active', el.textContent === cityInfo.name);
-            });
-            document.getElementById('current-city-name').textContent = cityInfo.name;
-
-            // Move Map
-            map.setView(cityInfo.center, 11);
-            updateMap();
-        }
-
-        // Auto Refresh
-        document.getElementById('auto-refresh').addEventListener('click', function() {
-            const icon = this.querySelector('i');
-            if(autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
-                icon.className = 'fa-solid fa-play';
-                this.style.background = 'white';
-                this.style.color = 'var(--text-main)';
+                const heatPoints = currentDistrictsData.map(d => [d.lat, d.lng, d.aqi]);
+                heatLayer = L.heatLayer(heatPoints, {
+                    radius: 50, // Larger radius for better visibility
+                    blur: 30,
+                    minOpacity: 0.5, // Visible even at low intensity/zoom
+                    max: maxVal,
+                    gradient: {
+                        0.2: 'green',
+                        0.4: 'yellow',
+                        0.6: 'orange',
+                        0.8: 'red',
+                        1.0: 'purple'
+                    }
+                }).addTo(map);
             } else {
-                autoRefreshInterval = setInterval(updateMap, 5000);
-                icon.className = 'fa-solid fa-pause';
-                this.style.background = 'var(--primary)';
-                this.style.color = 'white';
-                updateMap(); 
+                currentDistrictsData.forEach(d => {
+                    const color = getAqiColor(d.aqi);
+                    const icon = L.divIcon({
+                        className: 'custom-marker',
+                        html: `<div class="marker-pin" style="background:${color}">${d.aqi}</div>`,
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 20]
+                    });
+                    const m = L.marker([d.lat, d.lng], {
+                            icon
+                        }).addTo(map)
+                        .bindPopup(`<div style="text-align:center"><b>${d.name}</b><br>AQI: ${d.aqi}</div>`);
+                    markers.push(m);
+                });
+            }
+        }
+
+        document.getElementById('heatmap-toggle').addEventListener('click', () => {
+            isHeatmapActive = !isHeatmapActive;
+            const btn = document.getElementById('heatmap-toggle');
+            if (isHeatmapActive) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+            renderMapLayer();
+        });
+
+        // --- Renderers ---
+        function generateSmartForecast(hourly) {
+            const container = document.getElementById('smart-insight-section');
+            const msgEl = document.getElementById('insight-message');
+            container.style.display = 'block';
+            const now = new Date();
+            let nowIndex = hourly.time.findIndex(t => new Date(t) > now);
+            if (nowIndex === -1) nowIndex = 0;
+            const lookAhead = 12;
+            let bestAqi = 500,
+                bestTime = null,
+                worstAqi = 0;
+
+            for (let i = nowIndex; i < Math.min(nowIndex + lookAhead, hourly.time.length); i++) {
+                const val = hourly.us_aqi[i];
+                if (val < bestAqi) {
+                    bestAqi = val;
+                    bestTime = hourly.time[i];
+                }
+                if (val > worstAqi) worstAqi = val;
+            }
+
+            if (worstAqi > 150) {
+                msgEl.innerHTML = `⚠️ <b>هشدار:</b> کیفیت هوا در ۱۲ ساعت آینده ناسالم خواهد بود.`;
+                container.querySelector('.smart-insight-card').style.background = 'linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)';
+            } else if (bestAqi < 100) {
+                const date = new Date(bestTime);
+                const timeStr = date.toLocaleTimeString('fa-IR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                msgEl.innerHTML = `✅ <b>بهترین زمان فعالیت:</b> ساعت ${timeStr} با شاخص ${bestAqi}.`;
+                container.querySelector('.smart-insight-card').style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+            } else {
+                msgEl.innerHTML = `ℹ️ کیفیت هوا متوسط است.`;
+                container.querySelector('.smart-insight-card').style.background = 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)';
+            }
+        }
+
+        function updateWeatherUI(current) {
+            document.getElementById('weather-container').style.display = 'flex';
+            document.getElementById('temp-val').textContent = current.temperature_2m;
+            document.getElementById('wind-val').textContent = current.wind_speed_10m;
+            document.getElementById('humid-val').textContent = current.relative_humidity_2m;
+        }
+
+        function updateDynamicBackground(aqi) {
+            const root = document.documentElement;
+            let c1, c2;
+            if (aqi <= 50) {
+                c1 = 'rgba(16, 185, 129, 0.1)';
+                c2 = 'rgba(52, 211, 153, 0.1)';
+            } else if (aqi <= 100) {
+                c1 = 'rgba(245, 158, 11, 0.1)';
+                c2 = 'rgba(251, 191, 36, 0.1)';
+            } else if (aqi <= 150) {
+                c1 = 'rgba(249, 115, 22, 0.15)';
+                c2 = 'rgba(251, 146, 60, 0.1)';
+            } else if (aqi <= 200) {
+                c1 = 'rgba(239, 68, 68, 0.15)';
+                c2 = 'rgba(248, 113, 113, 0.1)';
+            } else {
+                c1 = 'rgba(126, 34, 206, 0.2)';
+                c2 = 'rgba(168, 85, 247, 0.15)';
+            }
+            root.style.setProperty('--bg-grad-1', c1);
+            root.style.setProperty('--bg-grad-2', c2);
+        }
+
+        function calculateCityDailyStats(apiData) {
+            if (!apiData || apiData.length === 0) return {
+                dates: [],
+                values: []
+            };
+            const dailyTotals = {};
+            apiData.forEach(location => {
+                const times = location.hourly.time;
+                const aqis = location.hourly.us_aqi;
+                times.forEach((timeStr, index) => {
+                    const aqi = aqis[index];
+                    if (aqi !== null && aqi !== undefined) {
+                        const dateKey = timeStr.split('T')[0];
+                        if (!dailyTotals[dateKey]) dailyTotals[dateKey] = {
+                            sum: 0,
+                            count: 0
+                        };
+                        dailyTotals[dateKey].sum += aqi;
+                        dailyTotals[dateKey].count++;
+                    }
+                });
+            });
+            const sortedDates = Object.keys(dailyTotals).sort();
+            const values = sortedDates.map(date => {
+                const dayData = dailyTotals[date];
+                return dayData.count > 0 ? Math.round(dayData.sum / dayData.count) : 0;
+            });
+            return {
+                dates: sortedDates,
+                values: values
+            };
+        }
+
+        function getAqiColor(val) {
+            if (val <= 50) return aqiColors.good;
+            if (val <= 100) return aqiColors.moderate;
+            if (val <= 150) return aqiColors.sensitive;
+            if (val <= 200) return aqiColors.unhealthy;
+            if (val <= 300) return aqiColors.veryUnhealthy;
+            return aqiColors.hazardous;
+        }
+
+        function renderPollutants(current, units) {
+            const container = document.getElementById('pollutant-container');
+            container.innerHTML = '';
+            const pollutants = [{
+                id: 'pm2_5',
+                name: 'ذرات PM2.5',
+                desc: 'خطرناک‌ترین'
+            }, {
+                id: 'pm10',
+                name: 'ذرات PM10',
+                desc: 'غبار'
+            }, {
+                id: 'nitrogen_dioxide',
+                name: 'NO2',
+                desc: 'ترافیک'
+            }, {
+                id: 'ozone',
+                name: 'O3',
+                desc: 'ازن'
+            }, {
+                id: 'sulphur_dioxide',
+                name: 'SO2',
+                desc: 'صنعتی'
+            }, {
+                id: 'carbon_monoxide',
+                name: 'CO',
+                desc: 'احتراق'
+            }];
+            pollutants.forEach(p => {
+                if (current && current[p.id]) {
+                    container.innerHTML += `
+                    <div class="bento-card">
+                        <div class="card-header"><span class="district-title">${p.name}</span></div>
+                        <div class="aqi-number" style="color:var(--text-main)">
+                            ${current[p.id]} <span class="unit-text">${units[p.id]}</span>
+                        </div>
+                        <div class="activity-label">${p.desc}</div>
+                    </div>`;
+                }
+            });
+        }
+
+        function updateHealthWidget(aqi) {
+            const container = document.getElementById('activity-container');
+            container.innerHTML = '';
+            const activities = [{
+                id: 'sport',
+                label: 'ورزش',
+                icon: 'fa-person-running'
+            }, {
+                id: 'mask',
+                label: 'ماسک',
+                icon: 'fa-head-side-mask'
+            }, {
+                id: 'windows',
+                label: 'پنجره',
+                icon: 'fa-door-open'
+            }, {
+                id: 'kids',
+                label: 'کودکان',
+                icon: 'fa-child-reaching'
+            }];
+            activities.forEach(act => {
+                let text, cls;
+                if (act.id === 'mask') {
+                    if (aqi <= 100) {
+                        text = 'خیر';
+                        cls = 'status-yes';
+                    } else if (aqi <= 150) {
+                        text = 'حساس‌ها';
+                        cls = 'status-caution';
+                    } else {
+                        text = 'بله';
+                        cls = 'status-no';
+                    }
+                } else {
+                    if (aqi <= 50) {
+                        text = 'عالی';
+                        cls = 'status-yes';
+                    } else if (aqi <= 100) {
+                        text = 'خوب';
+                        cls = 'status-yes';
+                    } else if (aqi <= 150) {
+                        text = 'احتیاط';
+                        cls = 'status-caution';
+                    } else {
+                        text = 'ممنوع';
+                        cls = 'status-no';
+                    }
+                }
+                container.innerHTML += `
+                <div class="activity-card">
+                    <i class="fa-solid ${act.icon} activity-icon ${cls}"></i>
+                    <span class="activity-status ${cls}">${text}</span>
+                    <span class="activity-label">${act.label}</span>
+                </div>`;
+            });
+        }
+
+        function renderDailyChart(dataObj) {
+            const ctx = document.getElementById('aqiTrendChart').getContext('2d');
+            const labels = dataObj.dates.map(dateStr => {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('fa-IR', {
+                    weekday: 'long'
+                });
+            });
+            if (trendChartInstance) trendChartInstance.destroy();
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(37,99,235,0.5)');
+            gradient.addColorStop(1, 'rgba(37,99,235,0)');
+            trendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'میانگین AQI',
+                        data: dataObj.values,
+                        borderColor: '#2563eb',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: isDark ? '#0f172a' : '#fff',
+                        pointBorderColor: '#2563eb'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Vazirmatn'
+                                },
+                                color: textColor
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Vazirmatn'
+                                },
+                                color: textColor
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Core Init & Event Listeners ---
+        function renderCitySelector() {
+            const dropdown = document.getElementById('city-dropdown');
+            dropdown.innerHTML = '';
+
+            const cityGroup = document.createElement('optgroup');
+            cityGroup.label = "شهرها";
+            Object.keys(cityData).forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = cityData[key].name;
+                if (key === currentCity) opt.selected = true;
+                cityGroup.appendChild(opt);
+            });
+            dropdown.appendChild(cityGroup);
+
+            if (savedBookmarks.length > 0) {
+                const bkGroup = document.createElement('optgroup');
+                bkGroup.label = "مکان‌های ذخیره شده";
+                savedBookmarks.forEach((bm, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = `bookmark-${index}`;
+                    opt.textContent = `📌 ${bm.name}`;
+                    bkGroup.appendChild(opt);
+                });
+                dropdown.appendChild(bkGroup);
+            }
+
+            const custom = document.createElement('option');
+            custom.value = 'custom';
+            custom.textContent = 'موقعیت سفارشی';
+            custom.id = 'custom-opt';
+            custom.hidden = true;
+            dropdown.appendChild(custom);
+
+            dropdown.onchange = (e) => {
+                const val = e.target.value;
+                if (val.startsWith('bookmark-')) {
+                    const idx = parseInt(val.split('-')[1]);
+                    const bm = savedBookmarks[idx];
+                    loadData('custom', {
+                        lat: bm.lat,
+                        lng: bm.lng,
+                        name: bm.name
+                    });
+                } else if (val !== 'custom') {
+                    loadData('city', val);
+                }
+            };
+        }
+
+        document.getElementById('bookmark-btn').addEventListener('click', () => {
+            if (!currentCustomLoc) {
+                if (cityData[currentCity]) {
+                    const city = cityData[currentCity];
+                    currentCustomLoc = {
+                        lat: city.center[0],
+                        lng: city.center[1],
+                        defaultName: city.name
+                    };
+                } else {
+                    alert("لطفا ابتدا یک نقطه روی نقشه انتخاب کنید.");
+                    return;
+                }
+            }
+            const name = prompt("نام این مکان را وارد کنید:", currentCustomLoc.defaultName || "مکان من");
+            if (name) {
+                savedBookmarks.push({
+                    name: name,
+                    lat: currentCustomLoc.lat,
+                    lng: currentCustomLoc.lng
+                });
+                localStorage.setItem('airQualityBookmarks', JSON.stringify(savedBookmarks));
+                renderCitySelector();
+                alert("مکان ذخیره شد!");
             }
         });
 
-        document.getElementById('refresh-data').addEventListener('click', updateMap);
+        document.getElementById('big-share-btn').addEventListener('click', () => {
+            const city = document.getElementById('health-city-name').textContent;
+            const insight = document.getElementById('insight-message').textContent;
+            const text = `🌍 گزارش کیفیت هوا - ${city}\n${insight}\nمشاهده در سامانه هوشمند`;
+            navigator.clipboard.writeText(text).then(() => alert('گزارش کپی شد!'));
+        });
 
-        // Init
+        document.getElementById('locate-me').addEventListener('click', () => {
+            if (navigator.geolocation) {
+                loader.style.display = 'flex';
+                navigator.geolocation.getCurrentPosition(pos => {
+                    document.getElementById('city-dropdown').value = 'custom';
+                    document.getElementById('custom-opt').hidden = false;
+                    loadData('custom', {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude,
+                        name: "موقعیت شما"
+                    });
+                }, () => {
+                    alert('خطا GPS');
+                    loader.style.display = 'none';
+                });
+            }
+        });
+
+        map.on('click', (e) => {
+            document.getElementById('city-dropdown').value = 'custom';
+            document.getElementById('custom-opt').hidden = false;
+            loadData('custom', {
+                lat: e.latlng.lat,
+                lng: e.latlng.lng,
+                name: "نقطه انتخابی"
+            });
+        });
+
+        document.getElementById('refresh-data').addEventListener('click', () => {
+            const val = document.getElementById('city-dropdown').value;
+            if (val.startsWith('bookmark-')) {
+                const idx = parseInt(val.split('-')[1]);
+                const bm = savedBookmarks[idx];
+                loadData('custom', {
+                    lat: bm.lat,
+                    lng: bm.lng,
+                    name: bm.name
+                });
+            } else if (val !== 'custom') {
+                loadData('city', val);
+            } else if (currentCustomLoc) {
+                loadData('custom', {...currentCustomLoc,
+                    name: document.getElementById('health-city-name').textContent
+                });
+            }
+        });
+
         renderCitySelector();
-        updateMap();
+        loadData('city', 'tehran');
     </script>
 </body>
+
 </html>
