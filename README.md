@@ -1,3 +1,4 @@
+<div align="center">
 # 🌬️ هوای‌ما | Air Quality Monitoring System
 
 <div align="center">
@@ -10,7 +11,6 @@
 
 *Smart Air Pollution Monitoring System for Iranian Cities*
 
-[مشاهده دمو](#demo) • [ویژگی‌ها](#features) • [نصب](#installation) • [مستندات](#documentation)
 
 </div>
 
@@ -146,10 +146,8 @@ php -S localhost:8000
 ```
 havaye-ma/
 │
-├── index.html          # فایل اصلی اپلیکیشن
-├── README.md           # مستندات پروژه
-└── assets/             # (اختیاری) تصاویر و منابع
-    └── screenshots/
+├── index.html         
+└── README.md      
 ```
 
 > 💡 این یک پروژه تک‌فایلی است. تمام HTML، CSS و JavaScript در فایل `index.html` قرار دارد.
@@ -270,21 +268,6 @@ GET https://api.open-meteo.com/v1/forecast
 
 ---
 
-## 📄 مجوز | License
-
-این پروژه تحت مجوز MIT منتشر شده است. برای اطلاعات بیشتر فایل [LICENSE](LICENSE) را مشاهده کنید.
-
-```
-MIT License
-
-Copyright (c) 2025 HavayeMa
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
-
----
 
 ## 🙏 قدردانی | Acknowledgments
 
@@ -301,6 +284,5 @@ in the Software without restriction...
 
 *Made with ❤️ for Clean Air in Iran*
 
-[⬆ بازگشت به بالا](#-هوایما--air-quality-monitoring-system)
 
 </div>
