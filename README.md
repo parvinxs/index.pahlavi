@@ -229,16 +229,16 @@ GET https://api.open-meteo.com/v1/forecast
 <div align="center">
 
 ### تم روشن | Light Theme
-[تصویر نقشه با مارکره](https://github.com/N3E6X/Havaye-Ma/blob/main/img/Light.png?raw=true)
+[تصویر نقشه با مارکره](https://github.com/N3E6X/Havaye-Ma/blob/main/img/Light.png)
 
 ### تم تاریک | Dark Theme
-[تصویر حالت شب](https://github.com/N3E6X/Havaye-Ma/blob/main/img/Dark.png?raw=true)
+[تصویر حالت شب](https://github.com/N3E6X/Havaye-Ma/blob/main/img/Dark.png)
 
 ### نقشه حرارتی | Heatmap
-[تصویر هیت‌مپ](https://github.com/N3E6X/Havaye-Ma/blob/main/img/Heatmap.png?raw=true)
+[تصویر هیت‌مپ](https://github.com/N3E6X/Havaye-Ma/blob/main/img/Heatmap.png)
 
 ### نمودار تحلیلی | Analytics
-[تصویر چارت و آنالیز](https://github.com/N3E6X/Havaye-Ma/blob/main/img/Analytics.png?raw=true)
+[تصویر چارت و آنالیز](https://github.com/N3E6X/Havaye-Ma/blob/main/img/Analytics.png)
 
 </div>
 
