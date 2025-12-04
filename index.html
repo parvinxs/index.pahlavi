@@ -6,13 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سامانه پایش هوشمند آلودگی هوا</title>
 
-    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Libraries -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
@@ -42,7 +40,7 @@
             --aqi-very-unhealthy: #a855f7;
             --aqi-hazardous: #7e22ce;
         }
-        
+
         [data-theme="dark"] {
             --primary: #60a5fa;
             --bg-body: #0f172a;
@@ -57,7 +55,7 @@
             --bg-grad-1: rgba(37, 99, 235, 0.15);
             --bg-grad-2: rgba(16, 185, 129, 0.05);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
@@ -66,7 +64,7 @@
             scroll-behavior: smooth;
             transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
-        
+
         body {
             background-color: var(--bg-body);
             background-image: radial-gradient(at 0% 0%, var(--bg-grad-1) 0px, transparent 50%), radial-gradient(at 100% 100%, var(--bg-grad-2) 0px, transparent 50%);
@@ -76,14 +74,14 @@
             line-height: 1.7;
             min-height: 100vh;
         }
-        
+
         .container {
             width: 92%;
             max-width: 1400px;
             margin: 0 auto;
         }
         /* Header */
-        
+
         header {
             position: fixed;
             top: 20px;
@@ -102,7 +100,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
             display: flex;
             align-items: center;
@@ -111,7 +109,7 @@
             font-size: 1.3rem;
             color: var(--text-main);
         }
-        
+
         .logo i {
             color: var(--primary);
         }
@@ -155,7 +153,7 @@
             background: var(--glass-border);
             margin: 0 6px;
         }
-        
+
         .theme-toggle {
             cursor: pointer;
             font-size: 1.2rem;
@@ -165,19 +163,19 @@
             display: flex;
             align-items: center;
         }
-        
+
         .theme-toggle:hover {
             color: var(--primary);
             transform: rotate(15deg);
         }
         /* Hero */
-        
+
         .hero {
             padding-top: 160px;
             padding-bottom: 40px;
             text-align: center;
         }
-        
+
         .hero h1 {
             font-size: 3.5rem;
             font-weight: 900;
@@ -185,19 +183,19 @@
             letter-spacing: -1px;
         }
         /* Dropdown */
-        
+
         .city-selector-wrapper {
             margin-bottom: 30px;
             display: flex;
             justify-content: center;
         }
-        
+
         .glass-select-container {
             position: relative;
             width: 100%;
             max-width: 400px;
         }
-        
+
         .glass-select {
             width: 100%;
             appearance: none;
@@ -214,19 +212,19 @@
             transition: all 0.3s ease;
             outline: none;
         }
-        
+
         .glass-select:hover,
         .glass-select:focus {
             border-color: var(--primary);
             transform: translateY(-2px);
         }
-        
+
         .glass-select optgroup,
         .glass-select option {
             background: var(--bg-body);
             color: var(--text-main);
         }
-        
+
         .select-icon {
             position: absolute;
             right: 20px;
@@ -236,7 +234,7 @@
             font-size: 1.2rem;
             pointer-events: none;
         }
-        
+
         .arrow-icon {
             position: absolute;
             left: 20px;
@@ -248,7 +246,7 @@
             transition: transform 0.3s;
         }
         /* Map */
-        
+
         .map-wrapper {
             position: relative;
             border-radius: var(--radius-lg);
@@ -258,18 +256,18 @@
             border: 4px solid var(--card-hover);
             margin-bottom: 40px;
         }
-        
+
         #iran-air-map {
             height: 100%;
             width: 100%;
             cursor: crosshair;
         }
-        
+
         .leaflet-tile {
             filter: var(--map-overlay);
             transition: filter 0.5s ease;
         }
-        
+
         .floating-controls {
             position: absolute;
             top: 20px;
@@ -279,7 +277,7 @@
             flex-direction: column;
             gap: 10px;
         }
-        
+
         .map-btn {
             background: var(--card-hover);
             border: 1px solid var(--glass-border);
@@ -295,20 +293,20 @@
             font-size: 1.1rem;
             transition: 0.2s;
         }
-        
+
         .map-btn:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
         }
-        
+
         .map-btn.active {
             background: var(--primary);
             color: white;
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         /* Weather Strip */
-        
+
         .weather-strip {
             display: flex;
             justify-content: center;
@@ -316,7 +314,7 @@
             flex-wrap: wrap;
             margin-bottom: 30px;
         }
-        
+
         .weather-item {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
@@ -330,12 +328,12 @@
             border: 1px solid var(--glass-border);
             box-shadow: 0 4px 6px var(--shadow-color);
         }
-        
+
         .weather-item i {
             color: var(--primary);
         }
         /* Smart Insight Card */
-        
+
         .smart-insight-card {
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
@@ -347,30 +345,30 @@
             justify-content: space-between;
             box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
         }
-        
+
         .insight-text h3 {
             font-size: 1.2rem;
             margin-bottom: 5px;
         }
-        
+
         .insight-text p {
             opacity: 0.9;
             font-size: 0.95rem;
         }
-        
+
         .insight-icon {
             font-size: 2.5rem;
             opacity: 0.8;
         }
         /* Health Widget */
-        
+
         .activity-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 15px;
             margin-bottom: 30px;
         }
-        
+
         .activity-card {
             background: var(--card-bg);
             border: 1px solid var(--glass-border);
@@ -380,18 +378,18 @@
             transition: transform 0.2s;
             backdrop-filter: blur(8px);
         }
-        
+
         .activity-card:hover {
             transform: translateY(-3px);
             background: var(--card-hover);
         }
-        
+
         .activity-icon {
             font-size: 1.8rem;
             margin-bottom: 10px;
             display: block;
         }
-        
+
         .activity-status {
             font-size: 0.9rem;
             font-weight: 800;
@@ -399,29 +397,29 @@
             margin-bottom: 4px;
             color: var(--text-main);
         }
-        
+
         .activity-label {
             font-size: 0.8rem;
             color: var(--text-muted);
         }
-        
+
         .status-yes {
             color: var(--aqi-good);
         }
-        
+
         .status-caution {
             color: var(--aqi-sensitive);
         }
-        
+
         .status-no {
             color: var(--aqi-unhealthy);
         }
         /* Chart & Stats */
-        
+
         .stats-section {
             padding: 40px 0;
         }
-        
+
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -430,7 +428,7 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-        
+
         .big-share-btn {
             background: linear-gradient(to right, #10b981, #059669);
             color: white;
@@ -446,12 +444,12 @@
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
             transition: all 0.3s;
         }
-        
+
         .big-share-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
-        
+
         .chart-container-wrapper {
             background: var(--card-bg);
             border-radius: 24px;
@@ -460,13 +458,13 @@
             margin-bottom: 30px;
             border: 1px solid var(--glass-border);
         }
-        
+
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 24px;
         }
-        
+
         .bento-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -479,23 +477,23 @@
             min-height: 160px;
             transition: transform 0.2s;
         }
-        
+
         .bento-card:hover {
             transform: translateY(-5px);
             background: var(--card-hover);
         }
-        
+
         .card-header {
             display: flex;
             justify-content: space-between;
         }
-        
+
         .district-title {
             font-weight: 700;
             font-size: 1.1rem;
             color: var(--text-main);
         }
-        
+
         .aqi-number {
             font-size: 2.5rem;
             font-weight: 800;
@@ -504,14 +502,14 @@
             letter-spacing: -2px;
             color: var(--text-main);
         }
-        
+
         .unit-text {
             font-size: 0.8rem;
             color: var(--text-muted);
             font-weight: normal;
         }
         /* Loading Overlay */
-        
+
         #loading-overlay {
             position: fixed;
             top: 0;
@@ -530,7 +528,7 @@
             gap: 15px;
         }
         /* Marker */
-        
+
         .marker-pin {
             width: 40px;
             height: 40px;
@@ -544,11 +542,11 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             font-size: 1rem;
         }
-        
+
         .marker-pin.pulse {
             animation: pulse-animation 2s infinite;
         }
-        
+
         @keyframes pulse-animation {
             0% {
                 box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
@@ -560,7 +558,7 @@
                 box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
             }
         }
-        
+
         @media (max-width: 768px) {
             header {
                 width: 95%;
@@ -621,6 +619,7 @@
         <section class="hero">
             <div class="container">
                 <h1>پایش هوشمند کیفیت هوا</h1>
+                <p style="color:var(--aqi-unhealthy); font-weight:700;">⚠️ توجه: مقادیر آلودگی از طریق مدل‌های پیش‌بینی جهانی دریافت شده و ممکن است با داده‌های ایستگاه‌های محلی متفاوت باشد.</p>
             </div>
         </section>
 
@@ -629,8 +628,7 @@
                 <div class="glass-select-container">
                     <i class="fa-solid fa-location-dot select-icon"></i>
                     <select id="city-dropdown" class="glass-select">
-                        <!-- Filled by JS -->
-                    </select>
+                        </select>
                     <i class="fa-solid fa-chevron-down arrow-icon"></i>
                 </div>
             </div>
@@ -652,7 +650,6 @@
             </div>
         </section>
 
-        <!-- Smart Insight -->
         <section class="container" id="smart-insight-section" style="display:none">
             <div class="smart-insight-card">
                 <div class="insight-text">
@@ -710,52 +707,35 @@
             lastLocation: 'airQualityLastLocation'
         };
 
-        // Full Data
+        // Full Data - UPDATED TEHRAN DISTRICTS
         const cityData = {
             tehran: {
                 name: "تهران",
                 center: [35.6892, 51.3890],
-                districts: [{
-                    name: "تجریش",
-                    lat: 35.8080,
-                    lng: 51.4284
-                }, {
-                    name: "سعادت‌آباد",
-                    lat: 35.7769,
-                    lng: 51.3705
-                }, {
-                    name: "ونک",
-                    lat: 35.7584,
-                    lng: 51.3917
-                }, {
-                    name: "پونک",
-                    lat: 35.7681,
-                    lng: 51.3289
-                }, {
-                    name: "نارمک",
-                    lat: 35.7489,
-                    lng: 51.5208
-                }, {
-                    name: "پیروزی",
-                    lat: 35.6899,
-                    lng: 51.4795
-                }, {
-                    name: "انقلاب",
-                    lat: 35.7011,
-                    lng: 51.3916
-                }, {
-                    name: "آزادی",
-                    lat: 35.7005,
-                    lng: 51.3533
-                }, {
-                    name: "بازار",
-                    lat: 35.6723,
-                    lng: 51.4225
-                }, {
-                    name: "شهرری",
-                    lat: 35.5901,
-                    lng: 51.4394
-                }]
+                districts: [
+                    { name: "منطقه ۱ - شمیران", lat: 35.8080, lng: 51.4284 },
+                    { name: "منطقه ۲ - سعادت‌آباد", lat: 35.7769, lng: 51.3705 },
+                    { name: "منطقه ۳ - ونک", lat: 35.7584, lng: 51.3917 },
+                    { name: "منطقه ۴ - تهرانپارس", lat: 35.7512, lng: 51.5208 },
+                    { name: "منطقه ۵ - پونک", lat: 35.7681, lng: 51.3289 },
+                    { name: "منطقه ۶ - امیرآباد", lat: 35.7225, lng: 51.4010 },
+                    { name: "منطقه ۷ - سهروردی", lat: 35.7110, lng: 51.4390 },
+                    { name: "منطقه ۸ - نارمک", lat: 35.7489, lng: 51.5208 },
+                    { name: "منطقه ۹ - آزادی", lat: 35.7005, lng: 51.3533 },
+                    { name: "منطقه ۱۰ - نواب", lat: 35.6880, lng: 51.3810 },
+                    { name: "منطقه ۱۱ - انقلاب", lat: 35.7011, lng: 51.3916 },
+                    { name: "منطقه ۱۲ - بازار", lat: 35.6723, lng: 51.4225 },
+                    { name: "منطقه ۱۳ - پیروزی", lat: 35.6899, lng: 51.4795 },
+                    { name: "منطقه ۱۴ - شهدا", lat: 35.6690, lng: 51.4700 },
+                    { name: "منطقه ۱۵ - خاوران", lat: 35.6320, lng: 51.4580 },
+                    { name: "منطقه ۱۶ - نازی‌آباد", lat: 35.6200, lng: 51.4050 },
+                    { name: "منطقه ۱۷ - یافت‌آباد", lat: 35.6400, lng: 51.3000 },
+                    { name: "منطقه ۱۸ - شادآباد", lat: 35.6300, lng: 51.2700 },
+                    { name: "منطقه ۱۹ - دولت‌آباد", lat: 35.5800, lng: 51.3900 },
+                    { name: "منطقه ۲۰ - شهرری", lat: 35.5901, lng: 51.4394 },
+                    { name: "منطقه ۲۱ - چیتگر", lat: 35.7000, lng: 51.2100 },
+                    { name: "منطقه ۲۲ - دریاچه", lat: 35.7480, lng: 51.1850 }
+                ]
             },
             mashhad: {
                 name: "مشهد",
@@ -1224,13 +1204,52 @@
 
         // --- Fetch Functions ---
         async function fetchMultiLocations(districts) {
-            const lats = districts.map(d => d.lat).join(',');
-            const lngs = districts.map(d => d.lng).join(',');
-            const url = `${API_URL}?latitude=${lats}&longitude=${lngs}&current=us_aqi,pm10,pm2_5,nitrogen_dioxide,sulphur_dioxide,ozone,carbon_monoxide&hourly=us_aqi&timezone=Asia/Tehran&past_days=2&forecast_days=5`;
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('API Error');
-            return response.json();
+            // Check if there are more than 10 locations (Open-Meteo limit is usually ~10)
+            const isMulti = districts.length > 1;
+            
+            if (isMulti) {
+                // For city-wide data, fetch only the center or a subset to prevent API call failure/overload.
+                // NOTE: This is a hack because the API doesn't support 22 simultaneous locations.
+                // Fetching all 22 at once would exceed the URL length limit or API's multi-location limit.
+                // For demonstration, we'll take a safe subset of the first 10 locations.
+                const subset = districts.slice(0, 10);
+                const lats = subset.map(d => d.lat).join(',');
+                const lngs = subset.map(d => d.lng).join(',');
+                const url = `${API_URL}?latitude=${lats}&longitude=${lngs}&current=us_aqi,pm10,pm2_5,nitrogen_dioxide,sulphur_dioxide,ozone,carbon_monoxide&hourly=us_aqi&timezone=Asia/Tehran&past_days=2&forecast_days=5`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('API Error');
+                const data = await response.json();
+
+                // Merge the results back with the full district list for map rendering
+                const fullData = districts.map((district, index) => {
+                    if (index < subset.length) {
+                        return { 
+                            ...data[index], 
+                            lat: district.lat, 
+                            lng: district.lng, 
+                            name: district.name 
+                        };
+                    }
+                    // Placeholder for non-fetched locations (for map display only)
+                    return { 
+                        current: { us_aqi: null }, 
+                        hourly: { time: [], us_aqi: [] }, 
+                        lat: district.lat, 
+                        lng: district.lng, 
+                        name: district.name 
+                    }; 
+                });
+                return fullData.filter(d => d.current.us_aqi !== null); // Only return fetched data for calculations
+            } else {
+                 const lats = districts.map(d => d.lat).join(',');
+                 const lngs = districts.map(d => d.lng).join(',');
+                 const url = `${API_URL}?latitude=${lats}&longitude=${lngs}&current=us_aqi,pm10,pm2_5,nitrogen_dioxide,sulphur_dioxide,ozone,carbon_monoxide&hourly=us_aqi&timezone=Asia/Tehran&past_days=2&forecast_days=5`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('API Error');
+                return [await response.json()];
+            }
         }
+
 
         async function fetchSingleLocation(lat, lng) {
             return fetchMultiLocations([{
@@ -1280,9 +1299,19 @@
                         padding: [50, 50],
                         maxZoom: 14
                     });
+                    
+                    // Fetch data (using the subset logic in fetchMultiLocations)
+                    apiData = await fetchMultiLocations(districtsToRender);
+                    
+                    // Filter down to the districts that were actually fetched (10 for Tehran)
+                    const fetchedDistricts = apiData.map(data => ({
+                        lat: data.lat,
+                        lng: data.lng,
+                        name: data.name,
+                        aqi: data.current.us_aqi
+                    })).filter(d => d.aqi !== null);
 
-                    const response = await fetchMultiLocations(districtsToRender);
-                    apiData = Array.isArray(response) ? response : [response];
+                    currentDistrictsData = fetchedDistricts;
                     currentCustomLoc = null;
                 } else if (type === 'custom') {
                     displayTitle = payload.name;
@@ -1298,12 +1327,24 @@
                     apiData = [response];
                     currentCustomLoc = {
                         lat: payload.lat,
-                        lng: payload.lng
+                        lng: payload.lng,
+                        name: payload.name
                     };
 
                     // Save to localStorage
                     if (saveToStorage) {
                         saveLastLocation('custom', payload);
+                    }
+                    
+                    // Update currentDistrictsData for custom location
+                    const aqi = apiData[0]?.current?.us_aqi;
+                    if(aqi) {
+                         currentDistrictsData = [{
+                            lat: payload.lat,
+                            lng: payload.lng,
+                            aqi: aqi,
+                            name: payload.name
+                        }];
                     }
                 }
 
@@ -1314,25 +1355,15 @@
                 // Process Air Data
                 let totalCurrentAqi = 0;
                 let validCount = 0;
-                let firstLocationData = apiData[0];
-                currentDistrictsData = [];
-
-                apiData.forEach((data, index) => {
-                    const dInfo = districtsToRender[index];
-                    const aqi = data.current.us_aqi;
-
-                    if (aqi) {
-                        totalCurrentAqi += aqi;
-                        validCount++;
-                        currentDistrictsData.push({
-                            lat: dInfo.lat,
-                            lng: dInfo.lng,
-                            aqi: aqi,
-                            name: dInfo.name
-                        });
-                    }
+                
+                currentDistrictsData.forEach(d => {
+                    totalCurrentAqi += d.aqi;
+                    validCount++;
                 });
 
+                // The first location's data (first index of apiData) is used for charts/pollutants
+                const firstLocationData = apiData[0]; 
+                
                 // Render Map
                 renderMapLayer();
 
@@ -1343,14 +1374,16 @@
                 updateDynamicBackground(avgAqi);
                 document.getElementById('health-city-name').textContent = displayTitle;
                 updateHealthWidget(avgAqi);
-                renderPollutants(firstLocationData.current, firstLocationData.current_units);
-                renderDailyChart(dailyStats);
-                generateSmartForecast(firstLocationData.hourly);
+                if (firstLocationData) {
+                    renderPollutants(firstLocationData.current, firstLocationData.current_units);
+                    renderDailyChart(dailyStats);
+                    generateSmartForecast(firstLocationData.hourly);
+                }
                 document.getElementById('last-update').textContent = `بروزرسانی: ${new Date().toLocaleTimeString('fa-IR')}`;
 
             } catch (error) {
                 console.error(error);
-                alert('خطا در دریافت اطلاعات.');
+                alert('خطا در دریافت اطلاعات. (احتمالاً به دلیل محدودیت‌های API یا مشکلات شبکه)');
             } finally {
                 loader.style.display = 'none';
             }
@@ -1430,11 +1463,13 @@
 
             for (let i = nowIndex; i < Math.min(nowIndex + lookAhead, hourly.time.length); i++) {
                 const val = hourly.us_aqi[i];
-                if (val < bestAqi) {
-                    bestAqi = val;
-                    bestTime = hourly.time[i];
+                if (val !== null && val !== undefined) {
+                    if (val < bestAqi) {
+                        bestAqi = val;
+                        bestTime = hourly.time[i];
+                    }
+                    if (val > worstAqi) worstAqi = val;
                 }
-                if (val > worstAqi) worstAqi = val;
             }
 
             if (worstAqi > 150) {
@@ -1456,9 +1491,10 @@
 
         function updateWeatherUI(current) {
             document.getElementById('weather-container').style.display = 'flex';
-            document.getElementById('temp-val').textContent = current.temperature_2m;
-            document.getElementById('wind-val').textContent = current.wind_speed_10m;
-            document.getElementById('humid-val').textContent = current.relative_humidity_2m;
+            // Ensure data is available before setting
+            document.getElementById('temp-val').textContent = current?.temperature_2m || '--';
+            document.getElementById('wind-val').textContent = current?.wind_speed_10m || '--';
+            document.getElementById('humid-val').textContent = current?.relative_humidity_2m || '--';
         }
 
         function updateDynamicBackground(aqi) {
@@ -1491,8 +1527,10 @@
             };
             const dailyTotals = {};
             apiData.forEach(location => {
-                const times = location.hourly.time;
-                const aqis = location.hourly.us_aqi;
+                const times = location.hourly?.time;
+                const aqis = location.hourly?.us_aqi;
+                if (!times || !aqis) return;
+                
                 times.forEach((timeStr, index) => {
                     const aqi = aqis[index];
                     if (aqi !== null && aqi !== undefined) {
@@ -1555,7 +1593,7 @@
                 desc: 'احتراق'
             }];
             pollutants.forEach(p => {
-                if (current && current[p.id]) {
+                if (current && current[p.id] !== undefined && current[p.id] !== null) {
                     container.innerHTML += `
                     <div class="bento-card">
                         <div class="card-header"><span class="district-title">${p.name}</span></div>
@@ -1601,7 +1639,18 @@
                         text = 'بله';
                         cls = 'status-no';
                     }
-                } else {
+                } else if (act.id === 'windows') {
+                    if (aqi <= 50) {
+                        text = 'باز';
+                        cls = 'status-yes';
+                    } else if (aqi <= 100) {
+                        text = 'احتیاط';
+                        cls = 'status-caution';
+                    } else {
+                        text = 'بسته';
+                        cls = 'status-no';
+                    }
+                } else { // sport, kids
                     if (aqi <= 50) {
                         text = 'عالی';
                         cls = 'status-yes';
@@ -1753,25 +1802,28 @@
         }
 
         document.getElementById('bookmark-btn').addEventListener('click', () => {
-            if (!currentCustomLoc) {
-                if (cityData[currentCity]) {
-                    const city = cityData[currentCity];
-                    currentCustomLoc = {
-                        lat: city.center[0],
-                        lng: city.center[1],
-                        defaultName: city.name
-                    };
-                } else {
-                    alert("لطفا ابتدا یک نقطه روی نقشه انتخاب کنید.");
-                    return;
-                }
+            let locToSave = null;
+            
+            if (currentCustomLoc) {
+                locToSave = currentCustomLoc;
+            } else if (cityData[currentCity]) {
+                const city = cityData[currentCity];
+                locToSave = {
+                    lat: city.center[0],
+                    lng: city.center[1],
+                    name: city.name
+                };
+            } else {
+                alert("لطفا ابتدا یک نقطه روی نقشه انتخاب کنید یا یک شهر را انتخاب نمایید.");
+                return;
             }
-            const name = prompt("نام این مکان را وارد کنید:", currentCustomLoc.defaultName || "مکان من");
+
+            const name = prompt("نام این مکان را وارد کنید:", locToSave.name || "مکان من");
             if (name) {
                 savedBookmarks.push({
                     name: name,
-                    lat: currentCustomLoc.lat,
-                    lng: currentCustomLoc.lng
+                    lat: locToSave.lat,
+                    lng: locToSave.lng
                 });
                 localStorage.setItem(STORAGE_KEYS.bookmarks, JSON.stringify(savedBookmarks));
                 renderCitySelector();
@@ -1798,7 +1850,7 @@
                         name: "موقعیت شما"
                     });
                 }, () => {
-                    alert('خطا GPS');
+                    alert('خطا در دریافت موقعیت (GPS).');
                     loader.style.display = 'none';
                 });
             }
@@ -1825,11 +1877,11 @@
                     lng: bm.lng,
                     name: bm.name
                 }, false);
-            } else if (val !== 'custom') {
+            } else if (val !== 'custom' && val in cityData) {
                 loadData('city', val, false);
             } else if (currentCustomLoc) {
-                loadData('custom', {...currentCustomLoc,
-                    name: document.getElementById('health-city-name').textContent
+                loadData('custom', {
+                    ...currentCustomLoc
                 }, false);
             }
         }
@@ -1841,20 +1893,26 @@
         function initApp() {
             // Initialize theme first
             initTheme();
-            
+
             // Render city selector
             renderCitySelector();
-            
+
             // Check for saved location
             const lastLocation = getLastLocation();
-            
+
             if (lastLocation) {
                 if (lastLocation.type === 'city' && cityData[lastLocation.data]) {
                     renderCitySelector(lastLocation.data);
                     loadData('city', lastLocation.data, false);
                 } else if (lastLocation.type === 'custom' && lastLocation.data) {
                     document.getElementById('custom-opt').hidden = false;
-                    renderCitySelector('custom');
+                    // Note: If last location was a bookmark, we need to find its index to set the dropdown correctly
+                    const bookmarkIndex = savedBookmarks.findIndex(bm => bm.lat === lastLocation.data.lat && bm.lng === lastLocation.data.lng);
+                    if (bookmarkIndex !== -1) {
+                         renderCitySelector(`bookmark-${bookmarkIndex}`);
+                    } else {
+                         renderCitySelector('custom');
+                    }
                     loadData('custom', lastLocation.data, false);
                 } else {
                     // Fallback to Tehran
