@@ -787,7 +787,7 @@
         const WAQI_URL = "https://api.waqi.info/feed";
         
         // *** IMPORTANT: PASTE YOUR DEPLOYED CLOUDFLARE WORKER URL HERE ***
-        const WORKER_API_URL = "https://aqi.yebekhe.workers.dev"; 
+        const WORKER_API_URL = "YOUR_WORKER_URL_HERE"; 
 
         // LocalStorage Keys
         const STORAGE_KEYS = {
@@ -796,481 +796,157 @@
             lastLocation: 'airQualityLastLocation'
         };
 
-        // Full Data - UPDATED TEHRAN DISTRICTS
+        // Full Data
         const cityData = {
             tehran: {
                 name: "تهران",
                 center: [35.6892, 51.3890],
-                districts: [{
-                    name: "منطقه ۱ - شمیران",
-                    lat: 35.8080,
-                    lng: 51.4284
-                }, {
-                    name: "منطقه ۲ - سعادت‌آباد",
-                    lat: 35.7769,
-                    lng: 51.3705
-                }, {
-                    name: "منطقه ۳ - ونک",
-                    lat: 35.7584,
-                    lng: 51.3917
-                }, {
-                    name: "منطقه ۴ - تهرانپارس",
-                    lat: 35.7512,
-                    lng: 51.5208
-                }, {
-                    name: "منطقه ۵ - پونک",
-                    lat: 35.7681,
-                    lng: 51.3289
-                }, {
-                    name: "منطقه ۶ - امیرآباد",
-                    lat: 35.7225,
-                    lng: 51.4010
-                }, {
-                    name: "منطقه ۷ - سهروردی",
-                    lat: 35.7110,
-                    lng: 51.4390
-                }, {
-                    name: "منطقه ۸ - نارمک",
-                    lat: 35.7489,
-                    lng: 51.5208
-                }, {
-                    name: "منطقه ۹ - آزادی",
-                    lat: 35.7005,
-                    lng: 51.3533
-                }, {
-                    name: "منطقه ۱۰ - نواب",
-                    lat: 35.6880,
-                    lng: 51.3810
-                }, {
-                    name: "منطقه ۱۱ - انقلاب",
-                    lat: 35.7011,
-                    lng: 51.3916
-                }, {
-                    name: "منطقه ۱۲ - بازار",
-                    lat: 35.6723,
-                    lng: 51.4225
-                }, {
-                    name: "منطقه ۱۳ - پیروزی",
-                    lat: 35.6899,
-                    lng: 51.4795
-                }, {
-                    name: "منطقه ۱۴ - شهدا",
-                    lat: 35.6690,
-                    lng: 51.4700
-                }, {
-                    name: "منطقه ۱۵ - خاوران",
-                    lat: 35.6320,
-                    lng: 51.4580
-                }, {
-                    name: "منطقه ۱۶ - نازی‌آباد",
-                    lat: 35.6200,
-                    lng: 51.4050
-                }, {
-                    name: "منطقه ۱۷ - یافت‌آباد",
-                    lat: 35.6400,
-                    lng: 51.3000
-                }, {
-                    name: "منطقه ۱۸ - شادآباد",
-                    lat: 35.6300,
-                    lng: 51.2700
-                }, {
-                    name: "منطقه ۱۹ - دولت‌آباد",
-                    lat: 35.5800,
-                    lng: 51.3900
-                }, {
-                    name: "منطقه ۲۰ - شهرری",
-                    lat: 35.5901,
-                    lng: 51.4394
-                }, {
-                    name: "منطقه ۲۱ - چیتگر",
-                    lat: 35.7000,
-                    lng: 51.2100
-                }, {
-                    name: "منطقه ۲۲ - دریاچه",
-                    lat: 35.7480,
-                    lng: 51.1850
-                }]
+                districts: [{ name: "منطقه ۱ - شمیران", lat: 35.8080, lng: 51.4284 }, { name: "منطقه ۲ - سعادت‌آباد", lat: 35.7769, lng: 51.3705 }, { name: "منطقه ۳ - ونک", lat: 35.7584, lng: 51.3917 }, { name: "منطقه ۴ - تهرانپارس", lat: 35.7512, lng: 51.5208 }, { name: "منطقه ۵ - پونک", lat: 35.7681, lng: 51.3289 }, { name: "منطقه ۶ - امیرآباد", lat: 35.7225, lng: 51.4010 }, { name: "منطقه ۷ - سهروردی", lat: 35.7110, lng: 51.4390 }, { name: "منطقه ۸ - نارمک", lat: 35.7489, lng: 51.5208 }, { name: "منطقه ۹ - آزادی", lat: 35.7005, lng: 51.3533 }, { name: "منطقه ۱۰ - نواب", lat: 35.6880, lng: 51.3810 }, { name: "منطقه ۱۱ - انقلاب", lat: 35.7011, lng: 51.3916 }, { name: "منطقه ۱۲ - بازار", lat: 35.6723, lng: 51.4225 }, { name: "منطقه ۱۳ - پیروزی", lat: 35.6899, lng: 51.4795 }, { name: "منطقه ۱۴ - شهدا", lat: 35.6690, lng: 51.4700 }, { name: "منطقه ۱۵ - خاوران", lat: 35.6320, lng: 51.4580 }, { name: "منطقه ۱۶ - نازی‌آباد", lat: 35.6200, lng: 51.4050 }, { name: "منطقه ۱۷ - یافت‌آباد", lat: 35.6400, lng: 51.3000 }, { name: "منطقه ۱۸ - شادآباد", lat: 35.6300, lng: 51.2700 }, { name: "منطقه ۱۹ - دولت‌آباد", lat: 35.5800, lng: 51.3900 }, { name: "منطقه ۲۰ - شهرری", lat: 35.5901, lng: 51.4394 }, { name: "منطقه ۲۱ - چیتگر", lat: 35.7000, lng: 51.2100 }, { name: "منطقه ۲۲ - دریاچه", lat: 35.7480, lng: 51.1850 }]
             },
             mashhad: {
                 name: "مشهد",
                 center: [36.2605, 59.6168],
-                districts: [{
-                    name: "سجاد",
-                    lat: 36.3209,
-                    lng: 59.5675
-                }, {
-                    name: "احمدآباد",
-                    lat: 36.2954,
-                    lng: 59.5760
-                }, {
-                    name: "تقی‌آباد",
-                    lat: 36.2876,
-                    lng: 59.5962
-                }, {
-                    name: "حرم",
-                    lat: 36.2875,
-                    lng: 59.6152
-                }, {
-                    name: "وکیل‌آباد",
-                    lat: 36.3367,
-                    lng: 59.5053
-                }]
+                districts: [{ name: "سجاد", lat: 36.3209, lng: 59.5675 }, { name: "احمدآباد", lat: 36.2954, lng: 59.5760 }, { name: "تقی‌آباد", lat: 36.2876, lng: 59.5962 }, { name: "حرم", lat: 36.2875, lng: 59.6152 }, { name: "وکیل‌آباد", lat: 36.3367, lng: 59.5053 }]
             },
             isfahan: {
                 name: "اصفهان",
                 center: [32.6546, 51.6680],
-                districts: [{
-                    name: "چهارباغ",
-                    lat: 32.6708,
-                    lng: 51.6650
-                }, {
-                    name: "بزرگمهر",
-                    lat: 32.6457,
-                    lng: 51.6898
-                }, {
-                    name: "کاوه",
-                    lat: 32.6845,
-                    lng: 51.6734
-                }, {
-                    name: "دروازه شیراز",
-                    lat: 32.6201,
-                    lng: 51.6698
-                }]
+                districts: [{ name: "چهارباغ", lat: 32.6708, lng: 51.6650 }, { name: "بزرگمهر", lat: 32.6457, lng: 51.6898 }, { name: "کاوه", lat: 32.6845, lng: 51.6734 }, { name: "دروازه شیراز", lat: 32.6201, lng: 51.6698 }]
             },
             karaj: {
                 name: "کرج",
                 center: [35.8272, 50.9484],
-                districts: [{
-                    name: "عظیمیه",
-                    lat: 35.8272,
-                    lng: 50.9484
-                }, {
-                    name: "گوهردشت",
-                    lat: 35.8423,
-                    lng: 50.9701
-                }, {
-                    name: "مهرشهر",
-                    lat: 35.8012,
-                    lng: 50.9089
-                }, {
-                    name: "جهانشهر",
-                    lat: 35.8210,
-                    lng: 50.9823
-                }]
+                districts: [{ name: "عظیمیه", lat: 35.8272, lng: 50.9484 }, { name: "گوهردشت", lat: 35.8423, lng: 50.9701 }, { name: "مهرشهر", lat: 35.8012, lng: 50.9089 }, { name: "جهانشهر", lat: 35.8210, lng: 50.9823 }]
             },
             shiraz: {
                 name: "شیراز",
                 center: [29.5926, 52.5836],
-                districts: [{
-                    name: "معالی‌آباد",
-                    lat: 29.6645,
-                    lng: 52.4789
-                }, {
-                    name: "زند",
-                    lat: 29.6154,
-                    lng: 52.5387
-                }, {
-                    name: "ستارخان",
-                    lat: 29.6321,
-                    lng: 52.5023
-                }, {
-                    name: "ارم",
-                    lat: 29.6389,
-                    lng: 52.5265
-                }]
+                districts: [{ name: "معالی‌آباد", lat: 29.6645, lng: 52.4789 }, { name: "زند", lat: 29.6154, lng: 52.5387 }, { name: "ستارخان", lat: 29.6321, lng: 52.5023 }, { name: "ارم", lat: 29.6389, lng: 52.5265 }]
             },
             tabriz: {
                 name: "تبریز",
                 center: [38.0962, 46.2738],
-                districts: [{
-                    name: "آبرسان",
-                    lat: 38.0789,
-                    lng: 46.3123
-                }, {
-                    name: "ولیعصر",
-                    lat: 38.0856,
-                    lng: 46.3345
-                }, {
-                    name: "ائل‌گلی",
-                    lat: 38.0267,
-                    lng: 46.3789
-                }, {
-                    name: "باغ‌شمال",
-                    lat: 38.0678,
-                    lng: 46.2987
-                }]
+                districts: [{ name: "آبرسان", lat: 38.0789, lng: 46.3123 }, { name: "ولیعصر", lat: 38.0856, lng: 46.3345 }, { name: "ائل‌گلی", lat: 38.0267, lng: 46.3789 }, { name: "باغ‌شمال", lat: 38.0678, lng: 46.2987 }]
             },
             ahvaz: {
                 name: "اهواز",
                 center: [31.3183, 48.6706],
-                districts: [{
-                    name: "کیانپارس",
-                    lat: 31.3456,
-                    lng: 48.6876
-                }, {
-                    name: "نادری",
-                    lat: 31.3210,
-                    lng: 48.6712
-                }, {
-                    name: "زیتون",
-                    lat: 31.3567,
-                    lng: 48.7012
-                }, {
-                    name: "گلستان",
-                    lat: 31.3012,
-                    lng: 48.6543
-                }]
+                districts: [{ name: "کیانپارس", lat: 31.3456, lng: 48.6876 }, { name: "نادری", lat: 31.3210, lng: 48.6712 }, { name: "زیتون", lat: 31.3567, lng: 48.7012 }, { name: "گلستان", lat: 31.3012, lng: 48.6543 }]
             },
             qom: {
                 name: "قم",
                 center: [34.6461, 50.8790],
-                districts: [{
-                    name: "حرم",
-                    lat: 34.6461,
-                    lng: 50.8790
-                }, {
-                    name: "زنبیل‌آباد",
-                    lat: 34.6234,
-                    lng: 50.8645
-                }, {
-                    name: "پردیسان",
-                    lat: 34.5890,
-                    lng: 50.8123
-                }]
+                districts: [{ name: "حرم", lat: 34.6461, lng: 50.8790 }, { name: "زنبیل‌آباد", lat: 34.6234, lng: 50.8645 }, { name: "پردیسان", lat: 34.5890, lng: 50.8123 }]
             },
             rasht: {
                 name: "رشت",
                 center: [37.2804, 49.5832],
-                districts: [{
-                    name: "گلسار",
-                    lat: 37.3012,
-                    lng: 49.5789
-                }, {
-                    name: "شهرداری",
-                    lat: 37.2804,
-                    lng: 49.5832
-                }, {
-                    name: "منظریه",
-                    lat: 37.2654,
-                    lng: 49.5912
-                }]
+                districts: [{ name: "گلسار", lat: 37.3012, lng: 49.5789 }, { name: "شهرداری", lat: 37.2804, lng: 49.5832 }, { name: "منظریه", lat: 37.2654, lng: 49.5912 }]
             },
             kermanshah: {
                 name: "کرمانشاه",
                 center: [34.3277, 47.0778],
-                districts: [{
-                    name: "مرکز",
-                    lat: 34.3277,
-                    lng: 47.0778
-                }, {
-                    name: "طاق‌بستان",
-                    lat: 34.3567,
-                    lng: 47.1012
-                }]
+                districts: [{ name: "مرکز", lat: 34.3277, lng: 47.0778 }, { name: "طاق‌بستان", lat: 34.3567, lng: 47.1012 }]
             },
             urmia: {
                 name: "ارومیه",
                 center: [37.5522, 45.0760],
-                districts: [{
-                    name: "مرکز",
-                    lat: 37.5522,
-                    lng: 45.0760
-                }, {
-                    name: "دانشکده",
-                    lat: 37.5345,
-                    lng: 45.0654
-                }]
+                districts: [{ name: "مرکز", lat: 37.5522, lng: 45.0760 }, { name: "دانشکده", lat: 37.5345, lng: 45.0654 }]
             },
             zahedan: {
                 name: "زاهدان",
                 center: [29.4517, 60.8841],
-                districts: [{
-                    name: "مرکز",
-                    lat: 29.4517,
-                    lng: 60.8841
-                }]
+                districts: [{ name: "مرکز", lat: 29.4517, lng: 60.8841 }]
             },
             kerman: {
                 name: "کرمان",
                 center: [30.2839, 57.0834],
-                districts: [{
-                    name: "مرکز",
-                    lat: 30.2839,
-                    lng: 57.0834
-                }]
+                districts: [{ name: "مرکز", lat: 30.2839, lng: 57.0834 }]
             },
             arak: {
                 name: "اراک",
                 center: [34.0920, 49.6890],
-                districts: [{
-                    name: "مرکز",
-                    lat: 34.0920,
-                    lng: 49.6890
-                }, {
-                    name: "صنعت",
-                    lat: 34.0754,
-                    lng: 49.7012
-                }]
+                districts: [{ name: "مرکز", lat: 34.0920, lng: 49.6890 }, { name: "صنعت", lat: 34.0754, lng: 49.7012 }]
             },
             yazd: {
                 name: "یزد",
                 center: [31.8974, 54.3569],
-                districts: [{
-                    name: "صفائیه",
-                    lat: 31.8654,
-                    lng: 54.3876
-                }, {
-                    name: "امیرچقماق",
-                    lat: 31.8974,
-                    lng: 54.3569
-                }]
+                districts: [{ name: "صفائیه", lat: 31.8654, lng: 54.3876 }, { name: "امیرچقماق", lat: 31.8974, lng: 54.3569 }]
             },
             bandarabbas: {
                 name: "بندرعباس",
                 center: [27.1830, 56.2666],
-                districts: [{
-                    name: "ساحلی",
-                    lat: 27.1754,
-                    lng: 56.2765
-                }, {
-                    name: "مرکز",
-                    lat: 27.1830,
-                    lng: 56.2666
-                }]
+                districts: [{ name: "ساحلی", lat: 27.1754, lng: 56.2765 }, { name: "مرکز", lat: 27.1830, lng: 56.2666 }]
             },
             hamedan: {
                 name: "همدان",
                 center: [34.7989, 48.5150],
-                districts: [{
-                    name: "بوعلی",
-                    lat: 34.7989,
-                    lng: 48.5150
-                }]
+                districts: [{ name: "بوعلی", lat: 34.7989, lng: 48.5150 }]
             },
             qazvin: {
                 name: "قزوین",
                 center: [36.2739, 50.0040],
-                districts: [{
-                    name: "مرکز",
-                    lat: 36.2739,
-                    lng: 50.0040
-                }]
+                districts: [{ name: "مرکز", lat: 36.2739, lng: 50.0040 }]
             },
             zanjan: {
                 name: "زنجان",
                 center: [36.6769, 48.4963],
-                districts: [{
-                    name: "مرکز",
-                    lat: 36.6769,
-                    lng: 48.4963
-                }]
+                districts: [{ name: "مرکز", lat: 36.6769, lng: 48.4963 }]
             },
             sanandaj: {
                 name: "سنندج",
                 center: [35.3219, 46.9862],
-                districts: [{
-                    name: "مرکز",
-                    lat: 35.3219,
-                    lng: 46.9862
-                }]
+                districts: [{ name: "مرکز", lat: 35.3219, lng: 46.9862 }]
             },
             gorgan: {
                 name: "گرگان",
                 center: [36.8456, 54.4393],
-                districts: [{
-                    name: "ناهارخوران",
-                    lat: 36.8012,
-                    lng: 54.4567
-                }, {
-                    name: "مرکز",
-                    lat: 36.8456,
-                    lng: 54.4393
-                }]
+                districts: [{ name: "ناهارخوران", lat: 36.8012, lng: 54.4567 }, { name: "مرکز", lat: 36.8456, lng: 54.4393 }]
             },
             sari: {
                 name: "ساری",
                 center: [36.5656, 53.0586],
-                districts: [{
-                    name: "مرکز",
-                    lat: 36.5656,
-                    lng: 53.0586
-                }]
+                districts: [{ name: "مرکز", lat: 36.5656, lng: 53.0586 }]
             },
             birjand: {
                 name: "بیرجند",
                 center: [32.8731, 59.2142],
-                districts: [{
-                    name: "مرکز",
-                    lat: 32.8731,
-                    lng: 59.2142
-                }]
+                districts: [{ name: "مرکز", lat: 32.8731, lng: 59.2142 }]
             },
             bojnord: {
                 name: "بجنورد",
                 center: [37.4750, 57.3214],
-                districts: [{
-                    name: "مرکز",
-                    lat: 37.4750,
-                    lng: 57.3214
-                }]
+                districts: [{ name: "مرکز", lat: 37.4750, lng: 57.3214 }]
             },
             shahrekord: {
                 name: "شهرکرد",
                 center: [32.3269, 50.8644],
-                districts: [{
-                    name: "مرکز",
-                    lat: 32.3269,
-                    lng: 50.8644
-                }]
+                districts: [{ name: "مرکز", lat: 32.3269, lng: 50.8644 }]
             },
             semnan: {
                 name: "سمنان",
                 center: [35.5729, 53.3971],
-                districts: [{
-                    name: "مرکز",
-                    lat: 35.5729,
-                    lng: 53.3971
-                }]
+                districts: [{ name: "مرکز", lat: 35.5729, lng: 53.3971 }]
             },
             yasuj: {
                 name: "یاسوج",
                 center: [30.6680, 51.5879],
-                districts: [{
-                    name: "مرکز",
-                    lat: 30.6680,
-                    lng: 51.5879
-                }]
+                districts: [{ name: "مرکز", lat: 30.6680, lng: 51.5879 }]
             },
             ardabil: {
                 name: "اردبیل",
                 center: [38.2491, 48.3003],
-                districts: [{
-                    name: "شورابیل",
-                    lat: 38.2234,
-                    lng: 48.2812
-                }, {
-                    name: "مرکز",
-                    lat: 38.2491,
-                    lng: 48.3003
-                }]
+                districts: [{ name: "شورابیل", lat: 38.2234, lng: 48.2812 }, { name: "مرکز", lat: 38.2491, lng: 48.3003 }]
             },
             ilam: {
                 name: "ایلام",
                 center: [33.6384, 46.4227],
-                districts: [{
-                    name: "مرکز",
-                    lat: 33.6384,
-                    lng: 46.4227
-                }]
+                districts: [{ name: "مرکز", lat: 33.6384, lng: 46.4227 }]
             },
             bushehr: {
                 name: "بوشهر",
                 center: [28.9234, 50.8203],
-                districts: [{
-                    name: "مرکز",
-                    lat: 28.9234,
-                    lng: 50.8203
-                }]
+                districts: [{ name: "مرکز", lat: 28.9234, lng: 50.8203 }]
             }
         };
 
@@ -1312,7 +988,6 @@
         const themeBtn = document.getElementById('theme-btn');
         const themeIcon = themeBtn.querySelector('i');
 
-        // Initialize theme from localStorage
         function initTheme() {
             const savedTheme = localStorage.getItem(STORAGE_KEYS.theme);
             if (savedTheme) {
@@ -1362,7 +1037,6 @@
             return null;
         }
         
-        // --- Mapping Helper for Worker ---
         function getWorkerCitySlug(key) {
             const map = {
                 'bandarabbas': 'bandar-abbas'
@@ -1370,158 +1044,98 @@
             return map[key] || key;
         }
 
-        // --- Fetch Functions ---
+        // --- UPDATED FETCH FUNCTION WITH BATCHING ---
         async function fetchMultiLocations(districts, cityKey = null) {
-            const isMulti = districts.length > 1;
+            // 1. Fetch Worker Data (Once for the city)
+            let workerResult = null;
+            if (cityKey && WORKER_API_URL && WORKER_API_URL !== "YOUR_WORKER_URL_HERE") {
+                const slug = getWorkerCitySlug(cityKey);
+                try {
+                    const wr = await fetch(`${WORKER_API_URL}?city=${slug}`);
+                    workerResult = await wr.json();
+                } catch(e) { console.error('Worker Error:', e); }
+            }
 
-            if (isMulti) {
-                // Open-Meteo Logic (Subset of 10)
-                const subset = districts.slice(0, 10);
+            // 2. Batch Logic: Split districts into chunks of 15 (Open-Meteo safe limit)
+            const CHUNK_SIZE = 15;
+            const chunks = [];
+            for (let i = 0; i < districts.length; i += CHUNK_SIZE) {
+                chunks.push(districts.slice(i, i + CHUNK_SIZE));
+            }
+
+            // 3. Process each chunk
+            const chunkPromises = chunks.map(async (subset) => {
+                // A. Open-Meteo
                 const lats = subset.map(d => d.lat).join(',');
                 const lngs = subset.map(d => d.lng).join(',');
                 const omUrl = `${API_URL}?latitude=${lats}&longitude=${lngs}&current=us_aqi,pm10,pm2_5,nitrogen_dioxide,sulphur_dioxide,ozone,carbon_monoxide&hourly=us_aqi&timezone=Asia/Tehran&past_days=1&forecast_days=6`;
 
-                // 1. Fetch Open-Meteo
                 const omResponse = await fetch(omUrl);
                 if (!omResponse.ok) throw new Error('API Error');
-                const omData = await omResponse.json();
+                let omData = await omResponse.json();
+                
+                // Open-Meteo returns a single object if 1 location, array if > 1. Normalize to array.
+                if (!Array.isArray(omData)) omData = [omData];
 
-                // 2. Fetch WAQI Data in Parallel for the subset
+                // B. WAQI (Parallel)
                 const waqiPromises = subset.map(d =>
                     fetch(`${WAQI_URL}/geo:${d.lat};${d.lng}/?token=${WAQI_TOKEN}`)
                     .then(res => res.json())
-                    .catch(err => {
-                        console.error('WAQI Error:', err);
-                        return null;
-                    })
+                    .catch(err => null)
                 );
-                
-                // 3. Fetch Worker Data (Single City Value)
-                let workerPromise = Promise.resolve(null);
-                if (cityKey && WORKER_API_URL && WORKER_API_URL !== "YOUR_WORKER_URL_HERE") {
-                    const slug = getWorkerCitySlug(cityKey);
-                    workerPromise = fetch(`${WORKER_API_URL}?city=${slug}`)
-                        .then(res => res.json())
-                        .catch(err => {
-                            console.error('Worker Error:', err);
-                            return null;
-                        });
-                }
+                const waqiResults = await Promise.all(waqiPromises);
 
-                // Wait for everything
-                const [waqiResults, workerResult] = await Promise.all([
-                    Promise.all(waqiPromises),
-                    workerPromise
-                ]);
+                // C. Merge results for this chunk
+                return subset.map((district, index) => {
+                    const omPoint = omData[index];
+                    const waqiPoint = waqiResults[index];
+                    
+                    let finalAqi = omPoint.current.us_aqi;
+                    const comparisonValues = [finalAqi];
 
-                // 4. Merge Data (Use Highest Value from OpenMeteo, WAQI, or Worker)
-                const fullData = districts.map((district, index) => {
-                    if (index < subset.length) {
-                        const omPoint = omData[index];
-                        const waqiPoint = waqiResults[index];
-                        let finalAqi = omPoint.current.us_aqi;
-                        const comparisonValues = [finalAqi];
-
-                        // Check WAQI
-                        if (waqiPoint && waqiPoint.status === 'ok') {
-                            const waqiVal = parseInt(waqiPoint.data.aqi);
-                            if (!isNaN(waqiVal)) comparisonValues.push(waqiVal);
-                        }
-                        
-                        // Check Worker (Applies to all districts if available)
-                        if (workerResult && workerResult.current && workerResult.current.aqi) {
-                             comparisonValues.push(workerResult.current.aqi);
-                        }
-
-                        // Take the highest value
-                        finalAqi = Math.max(...comparisonValues.filter(v => v !== null));
-                        
-                        // Store OpenMeteo Raw vs Final Max for scaling calculation later
-                        omPoint.rawOmAqi = omPoint.current.us_aqi; 
-                        omPoint.current.us_aqi = finalAqi;
-                        
-                        // Attach Worker Forecast Data to the first element only (to avoid duplication and use for forecast rendering)
-                        if (index === 0 && workerResult && workerResult.forecast) {
-                            omPoint.workerForecast = workerResult.forecast;
-                        }
-
-                        return {
-                            ...omPoint,
-                            lat: district.lat,
-                            lng: district.lng,
-                            name: district.name
-                        };
+                    if (waqiPoint && waqiPoint.status === 'ok') {
+                        const waqiVal = parseInt(waqiPoint.data.aqi);
+                        if (!isNaN(waqiVal)) comparisonValues.push(waqiVal);
                     }
-                    // Placeholder for non-fetched locations
+                    
+                    if (workerResult && workerResult.current && workerResult.current.aqi) {
+                         comparisonValues.push(workerResult.current.aqi);
+                    }
+
+                    finalAqi = Math.max(...comparisonValues.filter(v => v !== null));
+                    
+                    // Store raw and final
+                    omPoint.rawOmAqi = omPoint.current.us_aqi; 
+                    omPoint.current.us_aqi = finalAqi;
+
+                    // Attach Worker forecast only to the very first item of the very first chunk
+                    // We can just check if this is the first item in the batch AND 
+                    // this batch corresponds to the first original index? 
+                    // Simpler: attach to all, filter later, or just attach to this object.
+                    if (workerResult && workerResult.forecast) {
+                        omPoint.workerForecast = workerResult.forecast;
+                    }
+
+                    // *** CRITICAL: Ensure Lat/Lng/Name are attached ***
                     return {
-                        current: {
-                            us_aqi: null
-                        },
-                        hourly: {
-                            time: [],
-                            us_aqi: []
-                        },
+                        ...omPoint,
                         lat: district.lat,
                         lng: district.lng,
                         name: district.name
                     };
                 });
-                return fullData.filter(d => d.current.us_aqi !== null);
+            });
 
-            } else {
-                // Single Location Logic
-                const lats = districts.map(d => d.lat).join(',');
-                const lngs = districts.map(d => d.lng).join(',');
-                const omUrl = `${API_URL}?latitude=${lats}&longitude=${lngs}&current=us_aqi,pm10,pm2_5,nitrogen_dioxide,sulphur_dioxide,ozone,carbon_monoxide&hourly=us_aqi&timezone=Asia/Tehran&past_days=1&forecast_days=6`;
-
-                // Fetch Open-Meteo
-                const omResponse = await fetch(omUrl);
-                if (!omResponse.ok) throw new Error('API Error');
-                const omData = await omResponse.json();
-
-                // Fetch WAQI
-                const waqiResponse = await fetch(`${WAQI_URL}/geo:${districts[0].lat};${districts[0].lng}/?token=${WAQI_TOKEN}`).then(r => r.json()).catch(() => null);
-                
-                // Fetch Worker (Only if cityKey provided)
-                let workerResult = null;
-                if (cityKey && WORKER_API_URL && WORKER_API_URL !== "YOUR_WORKER_URL_HERE") {
-                    const slug = getWorkerCitySlug(cityKey);
-                    try {
-                        const wr = await fetch(`${WORKER_API_URL}?city=${slug}`);
-                        workerResult = await wr.json();
-                    } catch(e) { console.error(e); }
-                }
-
-                // Merge
-                let finalAqi = omData.current.us_aqi;
-                omData.rawOmAqi = finalAqi; // Save original
-                const comparisonValues = [finalAqi];
-
-                if (waqiResponse && waqiResponse.status === 'ok') {
-                    const waqiVal = parseInt(waqiResponse.data.aqi);
-                    if (!isNaN(waqiVal)) comparisonValues.push(waqiVal);
-                }
-                
-                if (workerResult && workerResult.current && workerResult.current.aqi) {
-                    comparisonValues.push(workerResult.current.aqi);
-                }
-                
-                omData.current.us_aqi = Math.max(...comparisonValues.filter(v => v !== null));
-                
-                // Attach forecast
-                if (workerResult && workerResult.forecast) {
-                    omData.workerForecast = workerResult.forecast;
-                }
-
-                return [omData];
-            }
+            // 4. Wait for all chunks and flatten
+            const nestedResults = await Promise.all(chunkPromises);
+            return nestedResults.flat();
         }
-
 
         async function fetchSingleLocation(lat, lng) {
             return fetchMultiLocations([{
                 lat,
-                lng
+                lng,
+                name: "موقعیت سفارشی" // Ensure name exists
             }]);
         }
 
@@ -1612,7 +1226,6 @@
                 const weatherData = await fetchWeather(centerLat, centerLng);
                 if (weatherData) updateWeatherUI(weatherData.current);
 
-                // Process Air Data
                 let totalCurrentAqi = 0;
                 let validCount = 0;
 
@@ -1623,21 +1236,17 @@
 
                 const firstLocationData = apiData[0];
 
-                // Render Map
                 renderMapLayer();
 
                 const avgAqi = validCount > 0 ? Math.round(totalCurrentAqi / validCount) : 0;
 
-                // Update UI
                 updateDynamicBackground(avgAqi);
                 document.getElementById('health-city-name').textContent = displayTitle;
                 updateHealthWidget(avgAqi);
                 
                 if (firstLocationData) {
                     renderPollutants(firstLocationData.current, firstLocationData.current_units);
-                    // RENDER HOURLY FORECAST SCROLL (REPLACES SMART INSIGHT)
                     renderHourlyForecast(firstLocationData.hourly, firstLocationData.current.us_aqi, firstLocationData.rawOmAqi);
-                    // RENDER DAILY FORECAST CARDS
                     renderForecastCards(firstLocationData.hourly, firstLocationData.workerForecast);
                 }
                 document.getElementById('last-update').textContent = `بروزرسانی: ${new Date().toLocaleTimeString('fa-IR')}`;
@@ -1654,13 +1263,18 @@
         function renderMapLayer() {
             markers.forEach(m => map.removeLayer(m));
             if (heatLayer) map.removeLayer(heatLayer);
+            
+            // Filter safe coordinates
+            const safeDistricts = currentDistrictsData.filter(d => 
+                d.lat !== undefined && d.lng !== undefined && d.lat !== null && d.lng !== null
+            );
 
             if (isHeatmapActive) {
                 if (typeof L.heatLayer !== 'function') return;
 
-                const maxVal = Math.max(...currentDistrictsData.map(d => d.aqi), 150);
+                const maxVal = Math.max(...safeDistricts.map(d => d.aqi), 150);
 
-                const heatPoints = currentDistrictsData.map(d => [d.lat, d.lng, d.aqi]);
+                const heatPoints = safeDistricts.map(d => [d.lat, d.lng, d.aqi]);
                 heatLayer = L.heatLayer(heatPoints, {
                     radius: 50,
                     blur: 30,
@@ -1675,7 +1289,7 @@
                     }
                 }).addTo(map);
             } else {
-                currentDistrictsData.forEach(d => {
+                safeDistricts.forEach(d => {
                     const color = getAqiColor(d.aqi);
                     const icon = L.divIcon({
                         className: 'custom-marker',
@@ -1704,7 +1318,6 @@
         });
 
         // --- Renderers ---
-        // NEW: Hourly Forecast Renderer (Replaces Smart Insight)
         function renderHourlyForecast(hourly, currentMaxAqi, rawOmAqi) {
             const section = document.getElementById('hourly-forecast-section');
             const container = document.getElementById('hourly-container');
@@ -1715,9 +1328,6 @@
             let nowIndex = hourly.time.findIndex(t => new Date(t) > now);
             if (nowIndex === -1) nowIndex = 0;
             
-            // "Use Highest Number" Logic for Hourly:
-            // If the Max Current AQI (from all sources) is significantly higher than the
-            // Open-Meteo prediction for right now, calculate an offset and apply it to the trend.
             let offset = 0;
             if (currentMaxAqi && rawOmAqi) {
                  offset = Math.max(0, currentMaxAqi - rawOmAqi);
@@ -1729,7 +1339,6 @@
                 const idx = nowIndex + i;
                 let val = hourly.us_aqi[idx];
                 
-                // Apply offset to respect the "highest number" logic found in current data
                 if (val !== null) {
                     val = Math.round(val + offset);
                 }
@@ -1908,12 +1517,10 @@
             });
         }
 
-        // --- NEW: Daily Forecast Cards Renderer ---
         function renderForecastCards(hourlyData, workerForecast) {
             const container = document.getElementById('forecast-container');
             container.innerHTML = '';
             
-            // 1. Group Open-Meteo Hourly by Day to find Max AQI per day
             const dailyMax = {};
             if (hourlyData && hourlyData.time) {
                 hourlyData.time.forEach((t, i) => {
@@ -1927,14 +1534,11 @@
             }
 
             const sortedDates = Object.keys(dailyMax).sort();
-            
-            // Limit to next 5 available days
-            const daysToShow = sortedDates.slice(0, 4);
+            const daysToShow = sortedDates.slice(0, 5);
 
             daysToShow.forEach((dateStr, index) => {
                 let finalAqi = dailyMax[dateStr];
 
-                // 2. Compare with Worker Forecast (Matched by index)
                 if (workerForecast && workerForecast[index]) {
                      const workerVal = workerForecast[index].aqi;
                      if (workerVal && workerVal > finalAqi) {
@@ -1960,7 +1564,6 @@
             });
         }
 
-        // --- Core Init & Event Listeners ---
         function renderCitySelector(selectedValue = null) {
             const dropdown = document.getElementById('city-dropdown');
             dropdown.innerHTML = '';
@@ -2048,7 +1651,6 @@
 
         document.getElementById('big-share-btn').addEventListener('click', () => {
             const city = document.getElementById('health-city-name').textContent;
-            // Removed Insight message from here since the section is gone
             const text = `🌍 گزارش کیفیت هوا - ${city}\nمشاهده در سامانه هوشمند`;
             navigator.clipboard.writeText(text).then(() => alert('گزارش کپی شد!'));
         });
@@ -2103,7 +1705,6 @@
         document.getElementById('refresh-data').addEventListener('click', handleRefresh);
         document.getElementById('refresh-header-btn').addEventListener('click', handleRefresh);
 
-        // --- Initialize App ---
         function initApp() {
             initTheme();
             renderCitySelector();
